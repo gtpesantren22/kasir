@@ -7,9 +7,12 @@ class Home extends CI_Controller
     {
         parent::__construct();
 
-        $this->load->model('Modeldata', 'model');
         $this->load->model('Auth_model');
+        if (!$this->Auth_model->current_user()) {
+            redirect('login/logout');
+        }
 
+        $this->load->model('Modeldata', 'model');
         $this->tahun = '2023/2024';
     }
 

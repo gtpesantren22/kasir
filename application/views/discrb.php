@@ -166,14 +166,8 @@
                                 <input type="text" id="" name="tgl" class="form-control flatpickr-no-config" id="exampleInputPassword1" placeholder="Tanggal" required>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="exampleInputPassword1">Bulan BP</label>
-                                <select name="bulan" class="form-control" required>
-                                    <option value=""> -pilih bulan- </option>
-                                    <?php
-                                    for ($i = 1; $i <= 12; $i++) { ?>
-                                        <option value="<?= $i; ?>"><?= $bulan[$i]; ?></option>
-                                    <?php } ?>
-                                </select>
+                                <label for="exampleInputPassword1">Keterengan BP</label>
+                                <input type="text" name="bulan" class="form-control uang" id="" placeholder="Bulan BP" required>
                             </div>
                             <div class="form-group mb-2">
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="bx bx-save"></i> Simpan</button>
