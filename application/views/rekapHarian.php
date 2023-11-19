@@ -152,13 +152,13 @@
                 <tbody>
                     <?php
                     $no = 1;
-                    foreach ($keluarData as $r) { ?>
+                    foreach ($keluarData as $r2) { ?>
                         <tr>
                             <td><?= $no++; ?></td>
-                            <td><?= $r->tanggal; ?></td>
-                            <td><?= $r->ket; ?></td>
-                            <td><?= rupiah($r->nominal); ?></td>
-                            <td><?= $r->penerima; ?></td>
+                            <td><?= $r2->tanggal; ?></td>
+                            <td><?= $r2->ket; ?></td>
+                            <td><?= rupiah($r2->nominal); ?></td>
+                            <td><?= $r2->penerima; ?></td>
                         </tr>
                     <?php } ?>
                 </tbody>
