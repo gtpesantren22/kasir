@@ -100,6 +100,21 @@
                                 <span>Pengeluaran</span>
                             </a>
                         </li>
+                        <div class="divider">
+                            <div class="divider-text">Rekapan</div>
+                        </div>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-calendar-heart-fill"></i>
+                                <span>Rekap Hasil</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('rekap/harian') ?>" class="submenu-link">Harian</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>

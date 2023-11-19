@@ -50,6 +50,13 @@ class Modeldata extends CI_Model
         $this->db->where($where1, $dtwhere1);
         return $this->db->get($table);
     }
+    function getBy2Sum($table, $where, $dtwhere, $where1, $dtwhere1, $sum)
+    {
+        $this->db->select_sum($sum, 'jml');
+        $this->db->where($where, $dtwhere);
+        $this->db->where($where1, $dtwhere1);
+        return $this->db->get($table);
+    }
 
 
     // <==============================================================================>
