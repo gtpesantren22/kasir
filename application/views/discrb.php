@@ -167,7 +167,7 @@
                             </div>
                             <div class="form-group mb-2">
                                 <label for="exampleInputPassword1">Keterengan BP</label>
-                                <input type="text" name="bulan" class="form-control uang" id="" placeholder="Bulan BP" required>
+                                <input type="text" name="bulan" class="form-control" id="" placeholder="Bulan BP" required>
                             </div>
                             <div class="form-group mb-2">
                                 <button type="submit" class="btn btn-primary btn-sm"><i class="bx bx-save"></i> Simpan</button>
@@ -199,6 +199,7 @@
                                         <td><?= rupiah($r->nominal); ?></td>
                                         <td><?= $r->kasir; ?></td>
                                         <td>
+                                            <a href="<?= base_url('bp/cetak/' . $r->id_bayar) ?>" target="_blank"><i class="bi bi-printer-fill text-success"></i></a>
                                             <a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
                                         </td>
                                     </tr>

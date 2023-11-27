@@ -102,4 +102,15 @@ class Bp extends CI_Controller
         $this->load->view('bayar', $data);
         $this->load->view('foot');
     }
+
+    public function cetak($id)
+    {
+        $data['data'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tangg'] = $this->model->getBySentral('tangg', 'nis', $data['data']->nis)->row();
+        $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
+        $data['tahun'] = $this->tahun;
+
+        $this->load->view('cetak', $data);
+    }
 }
