@@ -10,10 +10,17 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Heebo&display=swap');
+        @font-face {
+            font-family: 'Merchant Copy Doublesize';
+            /* Ganti NamaFont dengan nama font yang Anda inginkan */
+            src: url('../../template/assets/static/fonts/Merchant-Copy-Doublesize.ttf') format('truetype');
+            /* Ganti path/to/font.woff2 dengan path menuju file font Anda */
+            font-weight: normal;
+            font-style: normal;
+        }
 
         body {
-            font-family: 'Heebo', sans-serif;
+            font-family: 'Merchant Copy Doublesize', sans-serif;
         }
 
         .judul {
@@ -22,25 +29,25 @@
         }
 
         .almt {
-            font-size: 9px;
+            font-size: 7px;
             text-align: center;
         }
 
         table {
             font-size: x-small;
-            font-weight: bold;
+            /* font-weight: bold; */
         }
 
         .terima {
             font-size: x-small;
-            font-weight: bold;
+            /* font-weight: bold; */
             text-decoration: underline;
             margin-top: 10px;
         }
 
         .catatan {
             font-size: x-small;
-            font-weight: bold;
+            /* font-weight: bold; */
             margin-top: 10px;
         }
     </style>
@@ -68,7 +75,7 @@
                 <td>Pembayaran BP</td>
             </tr>
         </table>
-        <div class="terima">Diterima Dari</div>
+        <div class="terima">Diterima dari</div>
         <table>
             <tr>
                 <td>No. Briva</td>
@@ -124,11 +131,11 @@
         <table class=" table table-sm">
             <tr>
                 <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <!-- <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                <!-- <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                <!-- <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                <!-- <td>&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
                 <td>
                     <div class="catatan">Kraksaan, <?= date('d-m-Y') ?></div><br><br>
                     <div class="catatan"><u>Bendahara Pesantren</u></div>

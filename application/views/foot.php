@@ -45,6 +45,13 @@
     })
 </script>
 
+<script>
+    function redirectToPage() {
+        var selectedOption = document.getElementById("mySelect").value;
+
+        window.location.href = '<?= base_url('bp/discrb/') ?>' + selectedOption;
+    }
+</script>
 </body>
 
 </html>

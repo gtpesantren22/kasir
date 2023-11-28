@@ -5,6 +5,26 @@
     <div class="card">
         <div class="card-body">
             <div class="row">
+                <div class="col-md-12">
+                    <form action="" class="form form-horizontal">
+                        <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <label for="first-name-horizontal">Pilih Santri</label>
+                                </div>
+                                <div class="col-md-10 form-group">
+                                    <select class="choices form-select" id="mySelect" onchange="redirectToPage()">
+                                        <option value=""> -pilih- </option>
+                                        <?php foreach ($santri as $dts) : ?>
+                                            <option value="<?= $dts->nis ?>"><?= $dts->nama ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <hr>
                 <div class="col-md-8">
                     <div class="table-responsive">
                         <table class="table ">

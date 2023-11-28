@@ -31,6 +31,7 @@ class Bp extends CI_Controller
     {
         $data['bulan'] = $this->bulan;
 
+        $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
         $data['sn'] = $this->model->getBySentral('tb_santri', 'nis', $nis)->row();
         $data['tgn'] = $this->model->getBy2Sentral('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
         $data['masuk'] = $this->model->masukSentral($nis, $this->tahun)->row();
