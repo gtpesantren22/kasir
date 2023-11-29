@@ -10,7 +10,7 @@
                         <th>No</th>
                         <th>Tgl Bayar</th>
                         <th>Santri</th>
-                        <th>Bulan</th>
+                        <th>Ket Bulan</th>
                         <th>Nominal</th>
                         <th>Penerima</th>
                         <th>#</th>
@@ -24,7 +24,7 @@
                             <td><?= $no++; ?></td>
                             <td><?= $r->tgl; ?></td>
                             <td><?= $r->nama; ?></td>
-                            <td><?= $bulan[$r->bulan]; ?></td>
+                            <td><?= $r->bulan; ?></td>
                             <td><?= rupiah($r->nominal); ?></td>
                             <td><?= $r->kasir; ?></td>
                             <td><a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" onclick="return confirm('Yakin akan dihapus ?')"><i class="bi bi-trash text-danger"></i></a></td>
