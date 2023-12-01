@@ -83,7 +83,7 @@
                     <tr>
                         <th>No</th>
                         <th>Nama</th>
-                        <th>Briva</th>
+                        <th>Tanggal</th>
                         <th>Nominal</th>
                         <th>Kelas</th>
                     </tr>
@@ -95,9 +95,9 @@
                         <tr>
                             <td><?= $no++ ?></td>
                             <td><?= $a->nama ?></td>
-                            <td><?= $a->briva ?></td>
-                            <td>Rp. <?= number_format($a->total, 0, '.', '.') ?></td>
-                            <td><?= $a->k_formal . ' ' . $a->t_formal ?></td>
+                            <td><?= $a->tgl ?></td>
+                            <td>Rp. <?= number_format($a->nominal, 0, '.', '.') ?></td>
+                            <td><?= $a->kasir ?></td>
                         </tr>
                         <!-- Modal -->
                     <?php endforeach ?>

@@ -28,7 +28,7 @@ class Rekap extends CI_Controller
         $data['setoran'] = $this->model->getBy2Sum('setoran', 'tahun', $this->tahun, 'tgl_setor', $hariIni, 'nominal')->row();
         $data['keluar'] = $this->model->getBy2Sum('pengeluaran', 'tahun', $this->tahun, 'tanggal', $hariIni, 'nominal')->row();
 
-        $data['bpData'] = $this->model->getBy2('pembayaran', 'tahun', $this->tahun, 'tgl', $hariIni)->result();
+        $data['bpData'] = $this->db->query("SELECT pembayaran.*, tb_santri.nama FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE pembayaran.tahun = '$this->tahun' AND tgl = '$hariIni' ")->result();
         $data['setoranData'] = $this->model->getBy2('setoran', 'tahun', $this->tahun, 'tgl_setor', $hariIni)->result();
         $data['keluarData'] = $this->model->getBy2('pengeluaran', 'tahun', $this->tahun, 'tanggal', $hariIni)->result();
 
