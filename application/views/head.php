@@ -72,11 +72,35 @@
                         </div>
                         <li class="sidebar-item has-sub">
                             <a href="#" class='sidebar-link'>
+                                <i class="bi bi-card-checklist"></i>
+                                <span>Master BP</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('bp/piutang') ?>" class="submenu-link">Akun Piutang</a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('bp/pos') ?>" class="submenu-link">Pos Tagihan</a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('bp/jenis') ?>" class="submenu-link">Jenis Tagihan</a>
+                                </li>
+                                <!-- <li class="submenu-item  ">
+                                    <a href="<?= base_url('bp/buat') ?>" class="submenu-link">Buat Tagihan</a>
+                                </li> -->
+                            </ul>
+                        </li>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-bag-heart-fill"></i>
                                 <span>Biaya Pendidikan</span>
                             </a>
 
                             <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('bp/buat') ?>" class="submenu-link">Buat Tanggungan</a>
+                                </li>
                                 <li class="submenu-item  ">
                                     <a href="<?= base_url('bp') ?>" class="submenu-link">Tanggungan</a>
                                 </li>

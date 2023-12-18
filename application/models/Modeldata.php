@@ -31,6 +31,12 @@ class Modeldata extends CI_Model
         $this->db->where($where, $dtwhere);
         $this->db->delete($table);
     }
+    function hapus2($table, $where, $dtwhere, $where2, $dtwhere2)
+    {
+        $this->db->where($where, $dtwhere);
+        $this->db->where($where2, $dtwhere2);
+        $this->db->delete($table);
+    }
 
     function getByOrd($table, $where1, $dtwhere1, $ord, $lst)
     {

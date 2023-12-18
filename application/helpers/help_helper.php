@@ -195,3 +195,11 @@ function random($panjang)
     }
     return $string;
 }
+
+function uniqCodeCust($no, $awalan, $length)
+{
+    $urut = $no + 1;
+    $kode = (int) substr($urut, 0, 3);
+    $kodePj = $awalan . sprintf('%0' . $length . 's', $kode);
+    return $kodePj;
+}

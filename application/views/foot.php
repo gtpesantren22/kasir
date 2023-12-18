@@ -48,8 +48,12 @@
 <script>
     function redirectToPage() {
         var selectedOption = document.getElementById("mySelect").value;
-
         window.location.href = '<?= base_url('bp/discrb/') ?>' + selectedOption;
+    }
+
+    function redirectToPage2() {
+        var selectedOption = document.getElementById("nisSelect").value;
+        window.location.href = '<?= base_url('bp/tanggungan/') ?>' + selectedOption;
     }
 </script>
 </body>
