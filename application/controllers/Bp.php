@@ -116,7 +116,6 @@ class Bp extends CI_Controller
         $data['tahun'] = $this->tahun;
 
         $this->load->view('cetak', $data);
-        $this->load->view('cetak', $data);
     }
 
     public function piutang()
@@ -455,6 +454,7 @@ class Bp extends CI_Controller
             array('Nominal'),
             array('Tahun'),
             array('Keringanan (%)'),
+            array('Lmb Extra'),
         );
 
         // Transposisi data
@@ -515,34 +515,51 @@ class Bp extends CI_Controller
             for ($row = 2; $row <= $highestRow; $row++) {
 
                 $nis = $worksheet->getCell('A' . $row)->getValue();
-                $id_jenis = $worksheet->getCell('B' . $row)->getValue();
+                $id_jenis = substr($worksheet->getCell('B' . $row)->getValue(), 0, 6);
 
                 $data = [
                     'nis' => $worksheet->getCell('A' . $row)->getValue(),
-                    'id_jenis' => $worksheet->getCell('B' . $row)->getValue(),
-                    'nominal' => rmRp($worksheet->getCell('C' . $row)->getValue()),
+                    'id_jenis' => $id_jenis,
+                    'nominal' => $worksheet->getCell('C' . $row)->getValue(),
                     'tahun' => $worksheet->getCell('D' . $row)->getValue(),
                 ];
                 $data2 = [
                     'nis' => $worksheet->getCell('A' . $row)->getValue(),
-                    'jumlah' => rmRp($worksheet->getCell('E' . $row)->getValue()),
+                    'jumlah' => $worksheet->getCell('E' . $row)->getValue(),
+                    'lembaga' => $worksheet->getCell('F' . $row)->getValue(),
                     'tahun' => $worksheet->getCell('D' . $row)->getValue(),
                 ];
+
                 $cek = $this->model->getBy2('tagihan', 'nis', $nis, 'id_jenis', $id_jenis)->num_rows();
                 $cek2 = $this->model->getBy2('keringanan', 'nis', $nis, 'tahun', $this->tahun)->num_rows();
 
+                echo $nis . '<br>';
                 if ($cek < 1) {
                     $this->model->simpan('tagihan', $data);
+                    // echo 'tagihan ksosng harus tambah <br>';
+                } else if ($cek > 0) {
+                    $this->model->edit2('tagihan', 'nis', $nis, 'id_jenis', $id_jenis, $data);
+                    // echo 'tagihan ada dan update saja <br>';
+                } else if (!$cek) {
+                    $this->model->simpan('tagihan', $data);
+                    // echo 'tagihan ksosng harus tambah <br>';
                 }
+
                 if ($cek2 < 1) {
                     $this->model->simpan('keringanan', $data2);
+                    // echo 'keringanan ksoong tambah kan data<br>';
+                } else if ($cek > 0) {
+                    // echo 'keringanan ada update saja <br>';
+                    $this->model->edit('keringanan', 'nis', $nis, $data2);
+                } elseif (!$cek2) {
+                    $this->model->simpan('keringanan', $data2);
+                    // echo 'keringanan ksoong tambah kan data<br>';
                 }
             }
 
-            // Hapus file setelah selesai mengimpor
+
             delete_files($file_path);
 
-            // Tampilkan pesan sukses atau lakukan redirect ke halaman lain
             $this->session->set_flashdata('ok', 'Upload Selesai');
             redirect('bp/buat');
         }

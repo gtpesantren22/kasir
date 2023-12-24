@@ -38,13 +38,17 @@
                         <table class="table table-hover mb-0">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th colspan="2">NAMA TAGIHAN</th>
                                     <th>JUMLAH</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($tagihan as $tg) : ?>
+                                <?php
+                                $no = 1;
+                                foreach ($tagihan as $tg) : ?>
                                     <tr>
+                                        <td><?= $no++ ?></td>
                                         <td class="text-bold-500"><?= $tg->nama_pos  ?></td>
                                         <td class="text-bold-500"><?= $tg->id_jenis . ' - ' . $tg->nama_tagihan ?></td>
                                         <td>
