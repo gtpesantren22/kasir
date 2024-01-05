@@ -203,3 +203,10 @@ function uniqCodeCust($no, $awalan, $length)
     $kodePj = $awalan . sprintf('%0' . $length . 's', $kode);
     return $kodePj;
 }
+
+function kosan($kode)
+{
+    $tmp = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Zulfa", "Ny. Lathifah", "Ny. Ummi Kultsum");
+
+    return $tmp[$kode];
+}

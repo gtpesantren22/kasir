@@ -35,19 +35,37 @@ class Bp extends CI_Controller
         $data['bulan'] = $this->bulan;
 
         $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
-        $data['sn'] = $this->model->getBySentral('tb_santri', 'nis', $nis)->row();
+        $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
         $data['tgn'] = $this->model->getBy2Sentral('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
         $data['masuk'] = $this->model->masukSentral($nis, $this->tahun)->row();
         $data['bayar'] = $this->model->getBy2Sentral('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
         $data['hasil'] = $this->model->getBy2('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
+        $data['dekos'] = $this->model->getBy('dekos', 'nis', $nis);
 
-        $data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum");
+        $data['tmpKos'] = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum");
         $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
 
 
         $this->load->view('head');
         $this->load->view('discrb', $data);
         $this->load->view('foot');
+    }
+
+    public function buatKos($nis)
+    {
+        $sn = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        $data = [
+            'nis' => $nis,
+            't_kos' => $sn->t_kos,
+        ];
+        $this->model->simpan('dekos', $data);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Hasitory sudah dibuat');
+            redirect('bp/discrb/' . $nis);
+        } else {
+            $this->session->set_flashdata('error', 'Hasitory gagal dibuat');
+            redirect('bp/discrb/' . $nis);
+        }
     }
 
     public function addbayar()
@@ -82,6 +100,45 @@ class Bp extends CI_Controller
         }
     }
 
+    public function delDekos($id)
+    {
+        $data = $this->model->getBy('dekos', 'id_dekos', $id)->row();
+
+        $this->model->hapus('dekos', 'id_dekos', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Dekosan berhasil dihapus');
+            redirect('bp/discrb/' . $data->nis);
+        } else {
+            $this->session->set_flashdata('error', 'Dekosan tidak berhasil dihapus');
+            redirect('bp/discrb/' . $data->nis);
+        }
+    }
+    public function gantiKos()
+    {
+        $nis = $this->input->post('nis', true);
+        $tanggal = $this->input->post('tanggal', true);
+        $t_kos = $this->input->post('t_kos', true);
+
+        $kosBaru = [
+            'nis' => $nis,
+            'masuk' => $tanggal,
+            't_kos' => $t_kos,
+        ];
+        $kosEdit = ['keluar' => $tanggal];
+        $santri = ['t_kos' => $t_kos];
+
+        $this->model->edit2('dekos', 'nis', $nis, 'keluar', '0000-00-00', $kosEdit);
+        $this->model->simpan('dekos', $kosBaru);
+        $this->model->editSantri('tb_santri', 'nis', $nis, $santri);
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Dekosan berhasil dipindah');
+            redirect('bp/discrb/' . $nis);
+        } else {
+            $this->session->set_flashdata('error', 'Dekosan tidak berhasil dipindah');
+            redirect('bp/discrb/' . $nis);
+        }
+    }
     public function delBayar($id)
     {
         $data = $this->model->getBy('pembayaran', 'id_bayar', $id)->row();
@@ -507,24 +564,24 @@ class Bp extends CI_Controller
             // Mendapatkan data dari worksheet pertama
             $worksheet = $objPHPExcel->getActiveSheet();
             $highestRow = $worksheet->getHighestDataRow();
-            $highestColumn = $worksheet->getHighestColumn();
 
             // echo $highestRow;
 
             // Mulai dari baris kedua (untuk melewati header)
             for ($row = 2; $row <= $highestRow; $row++) {
 
-                $nis = $worksheet->getCell('A' . $row)->getValue();
-                $id_jenis = substr($worksheet->getCell('B' . $row)->getValue(), 0, 6);
+                $nis = rmRp($worksheet->getCell('A' . $row)->getValue());
+                $id_jenis = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('B' . $row)->getValue());
+                $nominal = $worksheet->getCell('C' . $row)->getValue() == '' ? 0 : $worksheet->getCell('C' . $row)->getValue();
 
                 $data = [
-                    'nis' => $worksheet->getCell('A' . $row)->getValue(),
+                    'nis' => $nis,
                     'id_jenis' => $id_jenis,
-                    'nominal' => $worksheet->getCell('C' . $row)->getValue(),
+                    'nominal' => $nominal,
                     'tahun' => $worksheet->getCell('D' . $row)->getValue(),
                 ];
                 $data2 = [
-                    'nis' => $worksheet->getCell('A' . $row)->getValue(),
+                    'nis' => $nis,
                     'jumlah' => $worksheet->getCell('E' . $row)->getValue(),
                     'lembaga' => $worksheet->getCell('F' . $row)->getValue(),
                     'tahun' => $worksheet->getCell('D' . $row)->getValue(),
@@ -533,7 +590,7 @@ class Bp extends CI_Controller
                 $cek = $this->model->getBy2('tagihan', 'nis', $nis, 'id_jenis', $id_jenis)->num_rows();
                 $cek2 = $this->model->getBy2('keringanan', 'nis', $nis, 'tahun', $this->tahun)->num_rows();
 
-                echo $nis . '<br>';
+                // echo $nis . '<br>';
                 if ($cek < 1) {
                     $this->model->simpan('tagihan', $data);
                     // echo 'tagihan ksosng harus tambah <br>';
@@ -558,7 +615,7 @@ class Bp extends CI_Controller
             }
 
 
-            delete_files($file_path);
+            unlink($file_path);
 
             $this->session->set_flashdata('ok', 'Upload Selesai');
             redirect('bp/buat');

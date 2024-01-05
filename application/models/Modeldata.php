@@ -6,6 +6,7 @@ class Modeldata extends CI_Model
     {
         parent::__construct();
         $this->sentral = $this->load->database('sentral', true);
+        $this->santri = $this->load->database('santri', true);
     }
 
     // Defaul functions
@@ -97,5 +98,14 @@ class Modeldata extends CI_Model
     function masukSentral($nis, $tahun)
     {
         return $this->sentral->query("SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun' GROUP BY nis ");
+    }
+
+    // <==============================================================================>
+
+    // Santri Functions
+    function editSantri($table, $where, $dtwhere, $data)
+    {
+        $this->santri->where($where, $dtwhere);
+        $this->santri->update($table, $data);
     }
 }

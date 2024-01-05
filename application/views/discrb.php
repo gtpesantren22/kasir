@@ -27,7 +27,7 @@
                 <hr>
                 <div class="col-md-8">
                     <div class="table-responsive">
-                        <table class="table ">
+                        <table class="table">
                             <tr>
                                 <th>NIS</th>
                                 <th>: <?= $sn->nis; ?></th>
@@ -59,7 +59,7 @@
                             </tr>
                             <tr>
                                 <th>Tempat Kos</th>
-                                <th>: <?= $tmpKos[$sn->t_kos] ?></th>
+                                <th>: <?= kosan($sn->t_kos) ?></th>
                             </tr>
                             <tr>
                                 <th>Keterangan</th>
@@ -67,6 +67,78 @@
                             </tr>
                         </table>
                     </div>
+                    History Dekos Santri
+                    <?php if ($dekos->num_rows() < 1) { ?>
+                        <a class="btn btn-primary btn-sm pull-right tbl-confirm" value="Membuat history dekosan pertama" href="<?= base_url('bp/buatKos/' . $sn->nis) ?>">Buat</a>
+                    <?php } else { ?>
+                        <button class="btn btn-primary btn-sm pull-right" data-bs-toggle="modal" data-bs-target="#pindahKos">Pindah</button>
+                        <div class="modal fade text-left" id="pindahKos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title" id="myModalLabel4">Pindah Kos Santri</h4>
+                                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                            <i data-feather="x"></i>
+                                        </button>
+                                    </div>
+                                    <?= form_open('bp/gantiKos') ?>
+                                    <input type="hidden" name="nis" value="<?= $sn->nis ?>">
+                                    <div class="modal-body">
+                                        <div class="form-group mb-2">
+                                            <label for="exampleInputEmail1">Pindah Tempat</label>
+                                            <select name="t_kos" class="form-control" required>
+                                                <?php $tmp = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Zulfa", "Ny. Lathifah", "Ny. Ummi Kultsum");
+                                                for ($a = 0; $a < count($tmp); $a++) : ?>
+                                                    <option <?= $a == $sn->t_kos ? 'selected' : '' ?> value="<?= $a ?>"><?= kosan($a) ?></option>
+                                                <?php endfor ?>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-2">
+                                            <label for="exampleInputEmail1">Tanggal Pindah</label>
+                                            <input type="text" name="tanggal" class="form-control flatpickr-no-config" id="" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                                            <i class="bx bx-x d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Close</span>
+                                        </button>
+                                        <button type="submit" class="btn btn-primary ms-1">
+                                            <i class="bx bx-check d-block d-sm-none"></i>
+                                            <span class="d-none d-sm-block">Upload Data</span>
+                                        </button>
+                                    </div>
+                                    <?= form_close() ?>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <div class="table-responsive mt-2">
+                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Tempat</th>
+                                    <th>Mulai</th>
+                                    <th>Keluar</th>
+                                    <th>#</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php $no = 1;
+                                foreach ($dekos->result() as $dks) : ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= kosan($dks->t_kos) ?></td>
+                                        <td><?= $dks->masuk ?></td>
+                                        <td><?= $dks->keluar ?></td>
+                                        <td><a href="<?= base_url('bp/delDekos/') . $dks->id_dekos ?>" class="tombol-hapus">Hapus</a></td>
+                                    </tr>
+                                <?php endforeach ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <hr>
                 </div>
                 <div class="col-md-4">
                     <div class="row row-cols-1 row-cols-md-1 row-cols-xl-12">
