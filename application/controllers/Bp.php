@@ -168,7 +168,7 @@ class Bp extends CI_Controller
     {
         $data['data'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
         $data['user'] = $this->Auth_model->current_user();
-        $data['tangg'] = $this->model->getBySentral('tangg', 'nis', $data['data']->nis)->row();
+        $data['tangg'] = $this->model->getBy2Sentral('tangg', 'nis', $data['data']->nis, 'tahun', $this->tahun)->row();
         $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
         $data['tahun'] = $this->tahun;
 
