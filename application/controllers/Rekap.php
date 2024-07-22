@@ -13,7 +13,7 @@ class Rekap extends CI_Controller
         }
 
         $this->load->model('Modeldata', 'model');
-        $this->tahun = '2023/2024';
+        $this->tahun = '2024/2025';
     }
 
     public function index()
