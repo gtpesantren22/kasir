@@ -139,6 +139,15 @@
                                 </li>
                             </ul>
                         </li>
+                        <div class="divider">
+                            <div class="divider-text">AddOn</div>
+                        </div>
+                        <li class="sidebar-item">
+                            <a href="<?= base_url('informasi') ?>" class='sidebar-link'>
+                                <i class="bi bi-postcard-heart-fill"></i>
+                                <span>Kirim Informasi</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
