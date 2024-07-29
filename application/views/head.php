@@ -142,11 +142,20 @@
                         <div class="divider">
                             <div class="divider-text">AddOn</div>
                         </div>
-                        <li class="sidebar-item">
-                            <a href="<?= base_url('informasi') ?>" class='sidebar-link'>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-postcard-heart-fill"></i>
                                 <span>Kirim Informasi</span>
                             </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('informasi') ?>" class="submenu-link">Informasi Slip Gaji</a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('informasi/tagihan') ?>" class="submenu-link">Tagihan Santri</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
