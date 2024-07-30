@@ -169,11 +169,11 @@ _Terima kasih atas pengabdiannya_';
             $responses = [];
             foreach (array_slice($sheetData, 4) as $row) {
                 $no_hp = $row['E'];
-                $pesan = '*Notifikasi Tagihan BRI Smartbilling*
+                $pesan = '*Notifikasi Tagihan BRI di PP DARUL LUGHAH WAL KAROMAH*
 Yth *' . $row['B'] . ',* 
-Dengan ini, kami sampaikan bahwa Anda masih belum melunasi tagihan di *PP DARUL LUGHAH WAL KAROMAH* sebesar ' . rupiah($row['D']) . '
+Dengan ini, kami sampaikan bahwa Anda masih belum melunasi tagihan *BIAYA PENDIDIKAN (BP)* sebesar ' . rupiah($row['D']) . '
 
-Anda dapat menyelesaikan tagihan Anda melalui BRIVA *' . $row['C'] . '* atau metode pembayaran lainnya melalui aplikasi BRI Smart Billing
+Anda dapat menyelesaikan tagihan Anda melalui BRIVA *' . $row['C'] . '* atau metode pembayaran lainnya di kantor Bendahara Pesantren.
 
 Terima kasih. 
 
