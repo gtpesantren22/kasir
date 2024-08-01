@@ -168,7 +168,8 @@ _Terima kasih atas pengabdiannya_';
             // $data_to_display = array_slice($sheetData, 2);
             $responses = [];
             foreach (array_slice($sheetData, 4) as $row) {
-                $no_hp = $row['E'];
+                $nis = $row['E'];
+                $no_hp = $this->db->query("SELECT hp FROM tb_santri WHERE nis = '$nis' ")->row();
                 $pesan = '*Notifikasi Tagihan BRI di PP DARUL LUGHAH WAL KAROMAH*
 Yth *' . $row['B'] . ',* 
 Dengan ini, kami sampaikan bahwa Anda masih belum melunasi tagihan *BIAYA PENDIDIKAN (BP)* sebesar ' . rupiah($row['D']) . '
@@ -181,7 +182,7 @@ PP Darul Lughah Wal Karomah
 
 _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
                 // Kirim pesan menggunakan curl
-                $response = kirim_person2('f4064efa9d05f66f9be6151ec91ad846', $no_hp, $pesan);
+                $response = kirim_person2('f4064efa9d05f66f9be6151ec91ad846', $no_hp->hp, $pesan);
                 $responses[] = $response;
             }
 
