@@ -13,6 +13,7 @@ class Bp extends CI_Controller
         parent::__construct();
 
         $this->load->model('Auth_model');
+        $this->sentral = $this->load->database('sentral', true);
         if (!$this->Auth_model->current_user()) {
             redirect('login/logout');
         }
@@ -27,9 +28,67 @@ class Bp extends CI_Controller
     {
         $data['data'] = $this->model->getByJoinSentral('tangg', 'tb_santri', 'nis', 'nis', 'tangg.tahun', $this->tahun)->result();
 
-        $this->load->view('head');
         $this->load->view('bp', $data);
-        $this->load->view('foot');
+    }
+
+    public function bpData()
+    {
+
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+        // $bulanIni = date('m');
+        $this->sentral->select("tangg.*, tb_santri.nama, tb_santri.k_formal, tb_santri.t_formal");
+        $this->sentral->from('tangg');
+        $this->sentral->join('tb_santri', 'tangg.nis=tb_santri.nis');
+        $this->sentral->where('tangg.tahun', $this->tahun);
+        $this->sentral->where('tb_santri.aktif', 'Y');
+        $this->sentral->order_by('tb_santri.nama', 'ASC');
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->sentral->group_start();
+            $this->sentral->like('tangg.briva', $search_value);
+            $this->sentral->or_like('tb_santri.nama', $search_value);
+            $this->sentral->or_like('tb_santri.k_formal', $search_value);
+            $this->sentral->or_like('tb_santri.t_formal', $search_value);
+            $this->sentral->group_end();
+        }
+
+        $total_records = $this->sentral->count_all_results('', false); // Count total records without limit
+
+        $this->sentral->limit($length, $start);
+        $query = $this->sentral->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                $row_number++,
+                $row->id_tangg,
+                $row->nis,
+                $row->nama,
+                $row->briva,
+                ($row->me_ju * 2) + ($row->ju_ap * 10),
+                $row->k_formal . ' ' . $row->t_formal,
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        // Set content-type header and return JSON data
+        header('Content-Type: application/json');
+        echo json_encode($output);
+        // var_dump($output);
     }
 
     public function discrb($nis)
@@ -158,118 +217,168 @@ class Bp extends CI_Controller
     public function bayar()
     {
 
-        $data['bayar'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE tahun = '$this->tahun' ORDER BY at DESC ")->result();
+        // $data['bayar'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE tahun = '$this->tahun' ORDER BY at DESC ")->result();
         $data['bulan'] = $this->bulan;
 
-        $this->load->view('head');
+        // $this->load->view('head');
         $this->load->view('bayar', $data);
-        $this->load->view('foot');
+        // $this->load->view('foot');
+    }
+    public function bayarData()
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+        // $bulanIni = date('m');
+        $this->db->select("pembayaran.*, tb_santri.nama");
+        $this->db->from('pembayaran');
+        $this->db->join('tb_santri', 'pembayaran.nis=tb_santri.nis');
+        $this->db->where('pembayaran.tahun', $this->tahun);
+        $this->db->where('tb_santri.aktif', 'Y');
+        $this->db->order_by('pembayaran.tgl', 'DESC');
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('pembayaran.tgl', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false); // Count total records without limit
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                $row_number++,
+                $row->id_bayar,
+                $row->tgl,
+                $row->nama,
+                $row->bulan,
+                $row->nominal,
+                $row->kasir,
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        // Set content-type header and return JSON data
+        header('Content-Type: application/json');
+        echo json_encode($output);
+        // var_dump($output);
     }
 
-    // public function cetak($id)
-    // {
-    //     $data['data'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
-    //     $data['user'] = $this->Auth_model->current_user();
-    //     $data['tangg'] = $this->model->getBy2Sentral('tangg', 'nis', $data['data']->nis, 'tahun', $this->tahun)->row();
-    //     $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
-    //     $data['tahun'] = $this->tahun;
-
-    //     $this->load->view('cetak', $data);
-    // }
     public function cetak($id)
     {
-        $dataNota = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
-        $user = $this->Auth_model->current_user();
-        $tangg = $this->model->getBy2Sentral('tangg', 'nis', $dataNota->nis, 'tahun', $this->tahun)->row();
-        $dataSantri = $this->model->getBy('tb_santri', 'nis', $dataNota->nis)->row();
-        $tahun = $this->tahun;
-        $sett = $this->model->getBy('settings', 'namaset', 'ipprinter')->row();
+        $data['data'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tangg'] = $this->model->getBy2Sentral('tangg', 'nis', $data['data']->nis, 'tahun', $this->tahun)->row();
+        $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
+        $data['tahun'] = $this->tahun;
 
-        try {
-            // Tentukan IP dan port printer POS
-            $connector = new NetworkPrintConnector("$sett->isiset", 9100);
-
-            // Inisialisasi printer
-            $printer = new Printer($connector);
-            $columnLeft = 10;
-            // Mulai mencetak
-            $printer->setFont(Printer::FONT_B);
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->setTextSize(2, 2);
-            $printer->text("KWITANSI PEMBAYARAN BP\n");
-            $printer->text("\n");
-            $printer->text("Ponpes Darul Lughah Wal Karomah\n");
-            $printer->feed();
-            $printer->setTextSize(1, 1);
-            $printer->text("Jl. Mayjend Pandjaitan No.12 Kel. Sidomukti - Kraksaan - Probolinggo - Jawa Timur\n");
-            $printer->text("───────────────────────────────────────────────────────────────\n");
-            // $printer->feed();
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
-
-            $printer->setTextSize(1, 1);
-            $printer->text("Tanggal : " . date('d-m-Y H:i:s') . "\n");
-            $printer->text("Kasir : $user->nama\n");
-            $printer->text("Ket : Pembayaran BP\n");
-            $printer->feed();
-
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
-            $printer->text("Diterima dari:\n");
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
-            $printer->setTextSize(1, 1);
-            $printer->text(gabung2Kolom('No. Briva', " : $tangg->briva", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Nama', " : $dataSantri->nama", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Alamat', " : $dataSantri->desa-$dataSantri->kec-$dataSantri->kab", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Kelas', " : $dataSantri->k_formal $dataSantri->jurusan $dataSantri->t_formal", 10, 38) . "\n");
-            $printer->feed();
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
-            $printer->text("Rincian:\n");
-            $printer->selectPrintMode(Printer::MODE_EMPHASIZED);
-            $printer->setTextSize(1, 1);
-            $printer->text(gabung2Kolom('Tgl Bayar', " : $dataNota->tgl", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Nominal', ' : ' . rupiah($dataNota->nominal), 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Penerima', " : $dataNota->kasir", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Ket', " : $dataNota->bulan", 10, 38) . "\n");
-            $printer->feed();
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
-            $printer->setTextSize(1, 1);
-            $printer->text("Catatan:\n");
-            $printer->text("Bukti pembayaran ini DISIMPAN oleh wali santri sebagai bukti pembayaran Biaya Pendidikan (BP) PonPesa Darul Lughah Wal Karomah tahun pelajaran $tahun\n");
-            $printer->feed();
-            $printer->text("Hal-hal yang berkaitan dengan teknis keuangan dapat menghubungi Contact Person berikut\n");
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE | Printer::MODE_EMPHASIZED);
-            $printer->setTextSize(1, 1);
-            $printer->text("0823-2964-1926\n");
-            $printer->feed();
-            // $printer->selectPrintMode(Printer::JUSTIFY_RIGHT);
-            $printer->text("Kraksaan, " . date('d-m-Y') . "\n");
-            $printer->feed();
-            $printer->feed();
-            $printer->feed();
-            $printer->text("Benahara Pesantren\n");
-            $printer->feed();
-
-            // $printer->setTextSize(4, 4);
-            // $printer->text("$nomor_antrian\n");
-            // $printer->setTextSize(1, 1);
-            // $printer->text("$tanggal $waktu\n");
-            // $printer->text("Harap menunggu panggilan\n");
-            // $printer->text("TERIMAKASIH\n");
-
-            // Potong kertas
-            $printer->cut();
-
-            // Tutup koneksi ke printer
-            $printer->close();
-
-            // Berikan respon sukses ke client
-            redirect('bp/discrb/' . $dataNota->nis);
-        } catch (Exception $e) {
-            // Jika ada kesalahan
-            redirect('bp/discrb/' . $dataNota->nis);
-            // echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-        }
+        $this->load->view('cetak', $data);
     }
+    // public function cetak($id)
+    // {
+    //     $dataNota = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
+    //     $user = $this->Auth_model->current_user();
+    //     $tangg = $this->model->getBy2Sentral('tangg', 'nis', $dataNota->nis, 'tahun', $this->tahun)->row();
+    //     $dataSantri = $this->model->getBy('tb_santri', 'nis', $dataNota->nis)->row();
+    //     $tahun = $this->tahun;
+    //     $sett = $this->model->getBy('settings', 'namaset', 'ipprinter')->row();
+
+    //     // echo $sett->isiset;
+    //     try {
+    //         // Tentukan IP dan port printer POS
+    //         $connector = new NetworkPrintConnector("$sett->isiset", 9100);
+
+    //         // Inisialisasi printer
+    //         $printer = new Printer($connector);
+    //         // Mulai mencetak
+    //         $printer->setFont(Printer::FONT_B);
+    //         $printer->setJustification(Printer::JUSTIFY_CENTER);
+    //         $printer->setTextSize(2, 2);
+    //         $printer->text("KWITANSI PEMBAYARAN BP\n");
+    //         $printer->text("\n");
+    //         $printer->text("Ponpes Darul Lughah Wal Karomah\n");
+    //         $printer->feed();
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Jl. Mayjend Pandjaitan No.12 Kel. Sidomukti - Kraksaan - Probolinggo - Jawa Timur\n");
+    //         $printer->text("───────────────────────────────────────────────────────────────\n");
+    //         // $printer->feed();
+    //         $printer->setJustification(Printer::JUSTIFY_LEFT);
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Tanggal : " . date('d-m-Y H:i:s') . "\n");
+    //         $printer->text("Kasir : $user->nama\n");
+    //         $printer->text("Ket : Pembayaran BP\n");
+    //         $printer->feed();
+
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+    //         $printer->text("Diterima dari:\n");
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text(gabung2Kolom('No. Briva', " : $tangg->briva", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Nama', " : $dataSantri->nama", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Alamat', " : $dataSantri->desa-$dataSantri->kec-$dataSantri->kab", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Kelas', " : $dataSantri->k_formal $dataSantri->jurusan $dataSantri->t_formal", 10, 38) . "\n");
+    //         $printer->feed();
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+    //         $printer->text("Rincian:\n");
+    //         $printer->selectPrintMode(Printer::MODE_EMPHASIZED);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text(gabung2Kolom('Tgl Bayar', " : $dataNota->tgl", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Nominal', ' : ' . rupiah($dataNota->nominal), 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Penerima', " : $dataNota->kasir", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Ket', " : $dataNota->bulan", 10, 38) . "\n");
+    //         $printer->feed();
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Catatan:\n");
+    //         $printer->text("Bukti pembayaran ini DISIMPAN oleh wali santri sebagai bukti pembayaran Biaya Pendidikan (BP) PonPesa Darul Lughah Wal Karomah tahun pelajaran $tahun\n");
+    //         $printer->feed();
+    //         $printer->text("Hal-hal yang berkaitan dengan teknis keuangan dapat menghubungi Contact Person berikut\n");
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE | Printer::MODE_EMPHASIZED);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("0823-2964-1926\n");
+    //         $printer->feed();
+    //         // $printer->selectPrintMode(Printer::JUSTIFY_RIGHT);
+    //         $printer->text("Kraksaan, " . date('d-m-Y') . "\n");
+    //         $printer->feed();
+    //         $printer->feed();
+    //         $printer->feed();
+    //         $printer->text("Benahara Pesantren\n");
+    //         $printer->feed();
+
+    //         // Potong kertas
+    //         $printer->cut();
+
+    //         // Tutup koneksi ke printer
+    //         $printer->close();
+
+    //         // Berikan respon sukses ke client
+    //         redirect('bp/discrb/' . $dataNota->nis);
+    //     } catch (Exception $e) {
+    //         // Jika ada kesalahan
+    //         // redirect('bp/discrb/' . $dataNota->nis);
+    //         // echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    //         echo $e->getMessage();
+    //     }
+    // }
 
     public function piutang()
     {

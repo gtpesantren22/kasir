@@ -1,10 +1,13 @@
+<?php
+$this->load->view('head');
+?>
 <div class="page-heading">
     <h3>Biaya Pendidikan</h3>
 </div>
 <section class="section">
     <div class="card">
         <div class="card-body">
-            <table class="table table-striped" id="table1">
+            <table class="table table-striped" id="bpData">
                 <thead>
                     <tr>
                         <th>No</th>
@@ -16,24 +19,63 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    $no = 1;
-                    foreach ($data as $a) : ?>
-                        <tr>
-                            <td><?= $no++ ?></td>
-                            <td><?= $a->nama ?></td>
-                            <td><?= $a->briva ?></td>
-                            <td>Rp. <?= number_format($a->total, 0, '.', '.') ?></td>
-                            <td><?= $a->k_formal . ' ' . $a->t_formal ?></td>
-                            <td>
-                                <a href="<?= base_url('bp/discrb/' . $a->nis); ?>"><button class="btn btn-info btn-sm">Discrb</button></a>
-                            </td>
-                        </tr>
-                        <!-- Modal -->
-                    <?php endforeach ?>
                 </tbody>
             </table>
         </div>
     </div>
 
 </section>
+<?php
+$this->load->view('foot');
+?>
+<script>
+    $(document).ready(function() {
+        $('#bpData').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('bp/bpData'); ?>",
+                "type": "POST",
+
+            },
+            "columns": [{
+                    "data": null,
+                    "render": function(data, type, row, meta) {
+                        return meta.row + meta.settings._iDisplayStart + 1; // Nomor urut
+                    }
+                },
+                {
+                    "data": 3
+                },
+                {
+                    "data": 4
+                },
+                {
+                    "data": 5,
+                    "render": function(data, type, row) {
+                        return 'Rp. ' + new Intl.NumberFormat('id-ID', {
+                            style: 'decimal',
+                            minimumFractionDigits: 0
+                        }).format(data);
+                    }
+                },
+                {
+                    "data": 6
+                },
+                {
+                    "data": null,
+                    "render": function(data, type, row) {
+                        var nis = row[2];
+                        return `
+                        <a href="<?= base_url('bp/discrb/') ?>${nis}" class="btn btn-success btn-sm">
+                            Detail <span class="bi bi-pen"></span>
+                        </a>
+                    `;
+                    }
+                }
+            ],
+            "pageLength": 10,
+            "searchDelay": 500
+        });
+    })
+</script>

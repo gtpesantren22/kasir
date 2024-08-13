@@ -20,6 +20,8 @@
     <link rel="stylesheet" href="<?= base_url('template/') ?>assets/compiled/css/iconly.css">
     <link rel="stylesheet" href="<?= base_url('template/') ?>assets/extensions/choices.js/public/assets/styles/choices.css">
     <link rel="stylesheet" href="<?= base_url('template/') ?>assets/extensions/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="<?= base_url('template/') ?>assets/extensions/sweetalert2/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.3/css/dataTables.dataTables.css">
 
 </head>
 
@@ -114,6 +116,21 @@
                                 <i class="bi bi-arrow-through-heart-fill"></i>
                                 <span>Setoran</span>
                             </a>
+                        </li>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
+                                <i class="bi bi-card-checklist"></i>
+                                <span>Tabungan Santri</span>
+                            </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('tabungan') ?>" class="submenu-link">Data Tabungan</a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('tabungan/rekap') ?>" class="submenu-link">Rekap Tabungan</a>
+                                </li>
+                            </ul>
                         </li>
                         <div class="divider">
                             <div class="divider-text">Pengeluaran</div>

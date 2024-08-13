@@ -34,6 +34,7 @@
 
 <script src="<?= base_url('template/') ?>assets/extensions/sweetalert2/sweetalert2.min.js"></script>
 <script src="<?= base_url('template/') ?>assets/static/js/my-notif.js"></script>
+<script src="https://cdn.datatables.net/2.1.3/js/dataTables.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
