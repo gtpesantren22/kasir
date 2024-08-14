@@ -165,7 +165,7 @@ class Tabungan extends CI_Controller
             "created" => date('Y-m-d H:i:s')
         ];
 
-        $this->model->input('tabungan', $data);
+        $this->model->simpan('tabungan', $data);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Input data sukses');
             redirect('tabungan');
@@ -283,10 +283,10 @@ class Tabungan extends CI_Controller
             } else {
                 // if ($dekos == 'Y') {
                 //     $this->model->inputDb2('kos', $data2);
-                //     $this->model->input('pembayaran', $data);
-                //     $this->model->input('tabungan', $dataTabungan);
+                //     $this->model->simpan('pembayaran', $data);
+                //     $this->model->simpan('tabungan', $dataTabungan);
                 //     if ($admin != 0 || $admin != '') {
-                //         $this->model->input('tabungan', $dataAdmin);
+                //         $this->model->simpan('tabungan', $dataAdmin);
                 //     }
 
                 //     if ($this->db->affected_rows() > 0) {
@@ -300,10 +300,10 @@ class Tabungan extends CI_Controller
                 //     }
                 // } else {
                 // }
-                $this->model->input('pembayaran', $data);
-                $this->model->input('tabungan', $dataTabungan);
+                $this->model->simpan('pembayaran', $data);
+                $this->model->simpan('tabungan', $dataTabungan);
                 if ($admin != 0 || $admin != '') {
-                    $this->model->input('tabungan', $dataAdmin);
+                    $this->model->simpan('tabungan', $dataAdmin);
                 }
 
                 if ($this->db->affected_rows() > 0) {
