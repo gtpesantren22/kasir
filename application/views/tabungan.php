@@ -72,14 +72,14 @@ $this->load->view('head');
                             </div>
                             <div class="form-group mb-1">
                                 <label for="">Keterangan</label>
-                                <input type="text" name="ket" class="form-control" required>
+                                <input type="text" name="ketr" class="form-control" required>
                             </div>
                             <div class="form-group mb-1">
                                 <button type="submit" class="btn btn-outline-success btn-sm mt-1"><i class="bi bi-save"></i> Simpan Data</button>
                                 <button type="reset" class="btn btn-warning btn-sm mt-1"><i class="bi bi-refresh"></i>Reset</button>
                             </div>
+                            <?= form_close(); ?>
                         </div>
-                        <?= form_close(); ?>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -155,8 +155,8 @@ $this->load->view('head');
                                 <button type="submit" class="btn btn-outline-danger btn-sm mt-1"><i class="bi bi-save"></i> Simpan Data</button>
                                 <button type="reset" class="btn btn-warning  btn-sm mt-1"><i class="bi bi-refresh"></i>Reset</button>
                             </div>
+                            <?= form_close(); ?>
                         </div>
-                        <?= form_close(); ?>
                     </div>
                 </div>
                 <div class="col-md-12">

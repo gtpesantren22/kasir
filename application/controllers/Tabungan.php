@@ -11,7 +11,8 @@ class Tabungan extends CI_Controller
         if (!$this->Auth_model->current_user()) {
             redirect('login/logout');
         }
-        $this->user = $this->Auth_model->current_user('nama');
+        $user = $this->Auth_model->current_user('nama');
+        $this->user = $user->nama;
         $this->load->model('Modeldata', 'model');
         $this->tahun = '2024/2025';
     }
@@ -158,7 +159,7 @@ class Tabungan extends CI_Controller
             "nis" => $this->input->post('nis', true),
             "nominal" => rmRp($this->input->post('jumlah', true)),
             "tanggal" => $this->input->post('tanggal', true),
-            "ket" => $this->input->post('ket', true),
+            "ket" => $this->input->post('ketr', true),
             "jenis" => 'masuk',
             "kasir" => $this->user,
             "tahun" => $this->tahun,
@@ -325,7 +326,7 @@ class Tabungan extends CI_Controller
     public function cetakNotaTabungan($id)
     {
 
-        $data['data'] = $this->db->query("SELECT * FROM tabungan JOIN tb_santri ON tabungan.nis=tb_santri.nis WHERE id_tabungan = '$id' ")->row();
+        $data['data'] = $this->db->query("SELECT * FROM tabungan WHERE id_tabungan = '$id' ")->row();
         $data['user'] = $this->Auth_model->current_user();
         // $data['tangg'] = $this->model->getBy2Sentral('tangg', 'nis', $data['data']->nis, 'tahun', $this->tahun)->row();
         $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
