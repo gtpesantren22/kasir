@@ -11,7 +11,7 @@ class Tabungan extends CI_Controller
         if (!$this->Auth_model->current_user()) {
             redirect('login/logout');
         }
-
+        $this->user = $this->Auth_model->current_user('nama');
         $this->load->model('Modeldata', 'model');
         $this->tahun = '2024/2025';
     }
