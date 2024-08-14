@@ -195,7 +195,7 @@ class Tabungan extends CI_Controller
         $nominal = rmRp($this->input->post('nominal', true));
         $tgl = $this->input->post('tgl', true);
         $kasir = $user->nama;
-        $nama = $this->input->post('nama', true);
+        // $nama = $this->input->post('nama', true);
         $nis = $this->input->post('nis', true);
         $tahun = $this->tahun;
         // $dekos = $this->input->post('dekos', true);
@@ -204,7 +204,7 @@ class Tabungan extends CI_Controller
         $admin = $this->input->post('admin', true);
 
         $dp = $this->model->getBy('tb_santri', 'nis', $nis)->row();
-        $dpBr = $this->model->getBy3('tanggungan', 'nis', $nis, 'tahun', $this->tahun, 'bulan', $bulan_bayar)->row();
+        // $dpBr = $this->model->getBy3('tanggungan', 'nis', $nis, 'tahun', $this->tahun, 'bulan', $bulan_bayar)->row();
 
         // $by = $nominal + $this->input->post('masuk', true);
         // $ttl = $this->input->post('ttl', true);
@@ -213,14 +213,15 @@ class Tabungan extends CI_Controller
         // $hpNo = '089682351413';
         $hpNo2 = '085236924510';
 
-        $data = [
+        $dataBayar = [
+            'id_bayar' => $this->uuid->v4(),
             'nis' => $nis,
-            'nama' => $nama,
             'tgl' => $tgl,
             'nominal' => $nominal,
             'bulan' => $bulan_bayar,
             'tahun' => $tahun,
             'kasir' => $kasir,
+            'at' => date('Y-m-d H:i:s'),
         ];
         // $data2 = [
         //     'nis' => $nis,
@@ -301,7 +302,7 @@ class Tabungan extends CI_Controller
                 //     }
                 // } else {
                 // }
-                $this->model->simpan('pembayaran', $data);
+                $this->model->simpan('pembayaran', $dataBayar);
                 $this->model->simpan('tabungan', $dataTabungan);
                 if ($admin != 0 || $admin != '') {
                     $this->model->simpan('tabungan', $dataAdmin);
@@ -333,5 +334,13 @@ class Tabungan extends CI_Controller
         $data['tahun'] = $this->tahun;
 
         $this->load->view('cetakTabungan', $data);
+    }
+
+    public function getDetailSantri()
+    {
+        $nis = $this->input->post('nis');
+        $data = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+
+        echo json_encode(['nama' => $data->nama]);
     }
 }

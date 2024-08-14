@@ -89,10 +89,11 @@ $this->load->view('head');
                         </div>
                         <div class="card-body">
                             <?= form_open('tabungan/outTabungan'); ?>
-                            <input type="hidden" name="nama" id="nama-santri">
+                            <!-- <input type="hidden" name="nama" id="nama-santri"> -->
                             <div class="row mb-1">
                                 <label for="input35" class="col-sm-3 col-form-label">Santri</label>
                                 <div class="col-sm-9">
+                                    <!-- <select name="nis" class="form-select choices" id="santriTabunganOut" required> -->
                                     <select name="nis" class="form-select choices" id="santriTabunganOut" required>
                                         <option value=""> pilih santri</option>
                                         <?php foreach ($santri as $sn) : ?>
@@ -287,7 +288,7 @@ $this->load->view('foot');
             var nis = $(this).data('nis');
             var nama = $(this).data('nama');
 
-            $('#nama-santri').text(nama);
+            // $('#nama-santri').text(nama);
             $('#modalRincian').modal('show');
 
             // Hancurkan DataTable jika sudah ada
@@ -368,21 +369,21 @@ $this->load->view('foot');
             });
         }
 
-        $('#santriTabunganOut').on('change', function() {
-            var nis = $(this).val();
-            $.ajax({
-                type: "POST",
-                url: "<?= base_url('tabungan/getDetailSantri') ?>",
-                data: {
-                    nis: nis
-                },
-                dataType: 'json',
-                success: function(data) {
-                    $('#nama-santri').val(data.nama);
-                    console.log(data.nama)
-                }
-            })
-        })
+        // $('#santriTabunganOut').on('change', function() {
+        //     var nis = $(this).val();
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "<?= base_url('tabungan/getDetailSantri') ?>",
+        //         data: {
+        //             nis: nis
+        //         },
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             $('#nama-santri').val(data.nama);
+
+        //         }
+        //     })
+        // })
 
     });
 </script>
