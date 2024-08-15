@@ -30,4 +30,6 @@ class Home extends CI_Controller
         $this->load->view('index', $data);
         $this->load->view('foot');
     }
+
+    
 }

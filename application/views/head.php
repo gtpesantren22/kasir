@@ -174,6 +174,8 @@
                                 </li>
                             </ul>
                         </li>
+                        <div class="divider"></div>
+                        <button class="btn btn-sm btn-block btn-danger" onclick="window.location.href='<?= base_url('login/logout') ?>'">LogOut</button>
                     </ul>
                 </div>
             </div>
