@@ -178,7 +178,7 @@ class Tabungan extends CI_Controller
 
     public function delTabungan($id)
     {
-        $this->model->delete('tabungan', 'id_tabungan', $id);
+        $this->model->hapus('tabungan', 'id_tabungan', $id);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Hapus data sukses');
             redirect('tabungan');
