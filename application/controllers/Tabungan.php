@@ -358,7 +358,11 @@ class Tabungan extends CI_Controller
         $data['judul'] = $dari == $sampai ? 'Rekap Tabungan : HARI INI' : "Rekap tabungan : $dari s/d $sampai";
         $data['data'] = $this->db->query("SELECT tabungan.*, tb_santri.nama FROM tabungan JOIN tb_santri ON tabungan.nis=tb_santri.nis WHERE tabungan.tanggal >= '$dari' AND tabungan.tanggal <= '$sampai' AND tabungan.tahun = '$this->tahun' ")->result();
 
-        $data['total'] = $this->db->query("SELECT SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS debit, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS kredit FROM tabungan WHERE tanggal >= '$dari' AND tanggal <= '$sampai' AND tahun = '$this->tahun' GROUP BY tahun ")->row();
+        $total = $this->db->query("SELECT SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS debit, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS kredit FROM tabungan WHERE tanggal >= '$dari' AND tanggal <= '$sampai' AND tahun = '$this->tahun' GROUP BY tahun ")->row();
+
+        $data['debit'] = $total ? $total->debit : 0;
+        $data['kredit'] = $total ? $total->kredit : 0;
+        $data['saldo'] = $data['debit'] - $data['kredit'];
 
         $this->load->view('showRekap', $data);
     }

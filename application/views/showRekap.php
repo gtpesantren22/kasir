@@ -8,7 +8,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-white">TABUNGAN</p>
-                                <h4 class="my-1 text-white"><?= rupiah($total->debit); ?></h4>
+                                <h4 class="my-1 text-white"><?= rupiah($debit); ?></h4>
                             </div>
                             <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
                             </div>
@@ -22,7 +22,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-white">PENGELUARAN</p>
-                                <h4 class="my-1 text-white"><?= rupiah($total->kredit); ?></h4>
+                                <h4 class="my-1 text-white"><?= rupiah($kredit); ?></h4>
                             </div>
                             <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
                             </div>
@@ -36,7 +36,7 @@
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-white">SALD0</p>
-                                <h4 class="my-1 text-white"><?= rupiah($total->debit - $total->kredit); ?></h4>
+                                <h4 class="my-1 text-white"><?= rupiah($saldo); ?></h4>
                             </div>
                             <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
                             </div>
