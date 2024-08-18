@@ -25,6 +25,7 @@ class Tabungan extends CI_Controller
 
         $data['sumData'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'masuk', 'nominal')->row();
         $data['sumkeluar'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'keluar', 'nominal')->row();
+        $data['sumAdmin'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'ket', 'Biaya admin', 'nominal')->row();
 
         $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
 

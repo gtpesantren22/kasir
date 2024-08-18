@@ -9,7 +9,23 @@ $this->load->view('head');
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card radius-10 bg-primary bg-gradient">
+                    <div class="alert alert-primary">
+                        <h4 class="alert-heading"><?= rupiah($sumData->jml); ?></h4>
+                        <p>Tabungan</p>
+                    </div>
+                    <div class="alert alert-danger">
+                        <h4 class="alert-heading"><?= rupiah($sumkeluar->jml); ?></h4>
+                        <p>Pengeluaran</p>
+                    </div>
+                    <div class="alert alert-success">
+                        <h4 class="alert-heading"><?= rupiah($sumData->jml - $sumkeluar->jml); ?></h4>
+                        <p>Saldo</p>
+                    </div>
+                    <div class="alert alert-warning">
+                        <h4 class="alert-heading"><?= rupiah($sumAdmin->jml); ?></h4>
+                        <p>Saldo Admin</p>
+                    </div>
+                    <!-- <div class="card radius-10 bg-primary">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div>
@@ -21,23 +37,11 @@ $this->load->view('head');
                             </div>
                         </div>
                     </div>
-                    <div class="card radius-10 bg-danger bg-gradient">
+                    <div class="card radius-10 bg-danger">
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div>
                                     <p class="mb-0 text-white">PENGELUARAN</p>
-                                    <h4 class="my-1 text-white"><?= rupiah($sumData->jml - $sumkeluar->jml); ?></h4>
-                                </div>
-                                <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card radius-10 bg-success bg-gradient">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center">
-                                <div>
-                                    <p class="mb-0 text-white">SALD0</p>
                                     <h4 class="my-1 text-white"><?= rupiah($sumkeluar->jml); ?></h4>
                                 </div>
                                 <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
@@ -45,6 +49,18 @@ $this->load->view('head');
                             </div>
                         </div>
                     </div>
+                    <div class="card radius-10 bg-success">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div>
+                                    <p class="mb-0 text-white">SALD0</p>
+                                    <h4 class="my-1 text-white"><?= rupiah($sumData->jml - $sumkeluar->jml); ?></h4>
+                                </div>
+                                <div class="text-white ms-auto font-35"><i class='bi bi-money'></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
                 <div class="col-md-4">
                     <div class="card radius-10 border-success border-bottom border-3 border-0">
