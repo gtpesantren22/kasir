@@ -10,6 +10,7 @@
                     <tr>
                         <th>No</th>
                         <th>Tgl Bayar</th>
+                        <th>No. Briva</th>
                         <th>Santri</th>
                         <th>Ket Bulan</th>
                         <th>Nominal</th>
@@ -44,6 +45,9 @@
                 },
                 {
                     "data": 2
+                },
+                {
+                    "data": 7
                 },
                 {
                     "data": 3

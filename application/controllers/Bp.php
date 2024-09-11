@@ -239,7 +239,7 @@ class Bp extends CI_Controller
         $this->db->join('tb_santri', 'pembayaran.nis=tb_santri.nis');
         $this->db->where('pembayaran.tahun', $this->tahun);
         $this->db->where('tb_santri.aktif', 'Y');
-        $this->db->order_by('pembayaran.tgl', 'DESC');
+        $this->db->order_by('pembayaran.at', 'DESC');
 
         // Filter search
         if (!empty($search_value)) {
@@ -257,6 +257,7 @@ class Bp extends CI_Controller
         $row_number = $start + 1;
 
         foreach ($query->result() as $row) {
+            $briva = $this->model->getBy2Sentral('tangg', 'nis', $row->nis, 'tahun', $row->tahun)->row();
             $data[] = [
                 $row_number++,
                 $row->id_bayar,
@@ -265,6 +266,7 @@ class Bp extends CI_Controller
                 $row->bulan,
                 $row->nominal,
                 $row->kasir,
+                $briva->briva,
             ];
         }
 
