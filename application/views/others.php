@@ -27,7 +27,7 @@
                             <td><?= rupiah($r->nominal); ?></td>
                             <td><?= $r->tanggal; ?></td>
                             <td>
-                                <a href="<?= base_url('others/print/' . $r->id_other) ?>"><i class="bi bi-printer text-primary"></i></a> |
+                                <a href="<?= base_url('others/print/' . $r->id_other) ?>" target="_blank"><i class="bi bi-printer text-primary"></i></a> |
                                 <a href="<?= base_url('others/delBayar/' . $r->id_other) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
                             </td>
                         </tr>

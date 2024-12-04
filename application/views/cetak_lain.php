@@ -55,7 +55,7 @@
 
 <body>
     <div class="container-fluid">
-        <div class="text-center judul"><b>KWITANSI PEMBAYARAN BP <br> PP. DARUL LUGHAH WAL KAROMAH</b></div>
+        <div class="text-center judul"><b>KWITANSI PEMBAYARAN<br> PP. DARUL LUGHAH WAL KAROMAH</b></div>
         <div class="almt">Jl. Mayjend Pandjaitan No.12, Kel. Sidomukti - Kec. Kraksaan - Probolinggo - Jawa Timur</div>
         <hr class="border border-dark border-1 opacity-75">
         <table>
