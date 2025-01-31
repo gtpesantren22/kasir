@@ -60,6 +60,32 @@ Rekening : ' . $row['C'] . '
 Nominal : ' . rupiah((int)$row['D']) . '
 Ket : ' . $row['F'] . '
 
+*_Rincian :_*
+Honor
+---------------------------
+- GAPOK	: ' . rupiah($row['H']) . '
+- T. FUNGSIONAL	: ' . rupiah($row['I']) . '
+- T. KINERJA	: ' . rupiah($row['J']) . '
+- T. BPJS	: ' . rupiah($row['K']) . '
+- T. STRUKTURAL	: ' . rupiah($row['L']) . '
+- T. WALI KELAS	: ' . rupiah($row['M']) . '
+- T. PENYESUAIAN	: ' . rupiah($row['N']) . '
+Potongan
+---------------------------
+- BPJS	: ' . rupiah($row['O']) . '
+- Infaq TPP	: ' . rupiah($row['P']) . '
+- Insijam	: ' . rupiah($row['Q']) . '
+- Kalender	: ' . rupiah($row['R']) . '
+- Koperasi/Cicilan	: ' . rupiah($row['S']) . '
+- Lain-lain	: ' . rupiah($row['T']) . '
+- Pinjaman Bank	: ' . rupiah($row['U']) . '
+- Pulsa	: ' . rupiah($row['V']) . '
+- SIMPOK	: ' . rupiah($row['W']) . '
+- SIMWA	: ' . rupiah($row['X']) . '
+- Tabungan Wajib	: ' . rupiah($row['Y']) . '
+- Verval SIMPATIKA	: ' . rupiah($row['Z']) . '
+- Verval TPP	: ' . rupiah($row['AA']) . '
+
 _Terima kasih atas pengabdiannya_';
                 // Kirim pesan menggunakan curl
                 $response = kirim_person2('f4064efa9d05f66f9be6151ec91ad846', $no_hp, $pesan);
