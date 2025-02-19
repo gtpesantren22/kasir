@@ -7,6 +7,7 @@ class Modeldata extends CI_Model
         parent::__construct();
         $this->sentral = $this->load->database('sentral', true);
         $this->santri = $this->load->database('santri', true);
+        $this->flat = $this->load->database('flat', true);
     }
 
     // Defaul functions
@@ -107,5 +108,40 @@ class Modeldata extends CI_Model
     {
         $this->santri->where($where, $dtwhere);
         $this->santri->update($table, $data);
+    }
+
+    // <==============================================================================>
+
+    // FLats Functions
+    function getGajis()
+    {
+        $this->flat->from('gaji');
+        $this->flat->order_by('tahun', 'DESC');
+        $this->flat->order_by('bulan', 'DESC');
+        return $this->flat->get();
+    }
+
+    function getListGaji($id)
+    {
+        $this->flat->from('gaji_detail');
+        $this->flat->where('gaji_id', $id);
+        return $this->flat->get();
+    }
+    function getRincian($id, $guru_id)
+    {
+        $this->flat->from('gaji_detail');
+        $this->flat->where('gaji_id', $id);
+        $this->flat->where('guru_id', $guru_id);
+        return $this->flat->get();
+    }
+
+    function getPotongan($id, $guru_id)
+    {
+        $gaji = $this->flat->get_where('gaji', ['gaji_id' => $id])->row();
+
+        $this->flat->where('bulan', $gaji->bulan);
+        $this->flat->where('tahun', $gaji->tahun);
+        $this->flat->where('guru_id', $guru_id);
+        return $this->flat->get('potongan');
     }
 }

@@ -11,12 +11,19 @@ class Informasi extends CI_Controller
     {
         parent::__construct();
         $this->load->library('upload');
+        $this->load->model('Modeldata', 'model');
+
+        $this->key = $this->db->query("SELECT * FROM settings WHERE namaset = 'key' ")->row('isiset');
+        $this->url = $this->db->query("SELECT * FROM settings WHERE namaset = 'url' ")->row('isiset');
     }
 
     public function index()
     {
+        // $data['datagaji'] = $this->getGaji($this->key);
+        $data['datagaji'] = $this->model->getGajis()->result_array();
+
         $this->load->view('head');
-        $this->load->view('send_slipgaji');
+        $this->load->view('send_slipgaji', $data);
         $this->load->view('foot');
     }
 
@@ -213,6 +220,250 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
             }
 
             echo json_encode(array('status' => 'success', 'responses' => $responses));
+        }
+    }
+
+
+
+    function getGaji($apiKey)
+    {
+        $url = $this->url . "list_gaji?key=" . urlencode($apiKey);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/json"
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        // Debugging jika error
+        if ($error) {
+            echo "cURL Error: " . $error;
+            return null;
+        } elseif ($httpCode !== 200) {
+            echo "HTTP Error Code: " . $httpCode;
+            return null;
+        }
+
+        return json_decode($response, true);
+    }
+
+    public function getListGaji($gaji_id, $key)
+    {
+        $url = $this->url . "gaji_detail?key=" . urlencode($key);
+
+        // Pastikan data dikirim dengan format yang benar
+        $data = http_build_query([
+            "gaji_id" => $gaji_id
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/x-www-form-urlencoded"
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        // Debugging
+        if ($error) {
+            echo "cURL Error: " . $error;
+            return null;
+        } elseif ($httpCode !== 200) {
+            echo "HTTP Error Code: " . $httpCode;
+            return null;
+        }
+
+        return json_decode($response, true);
+    }
+
+    public function getRincian($gaji_id, $guru_id, $key)
+    {
+        $url = $this->url . "gaji_rinci?key=" . urlencode($key);
+
+        // Pastikan data dikirim dengan format yang benar
+        $data = http_build_query([
+            "gaji_id" => $gaji_id,
+            "guru_id" => $guru_id
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/x-www-form-urlencoded"
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        // Debugging
+        if ($error) {
+            echo "cURL Error: " . $error;
+            return null;
+        } elseif ($httpCode !== 200) {
+            echo "HTTP Error Code: " . $httpCode;
+            return null;
+        }
+
+        return json_decode($response, true);
+    }
+
+    public function getPotongan($gaji_id, $guru_id, $key)
+    {
+
+        $url = $this->url . "potong_rinci?key=" . urlencode($key);
+
+        // Pastikan data dikirim dengan format yang benar
+        $data = http_build_query([
+            "gaji_id" => $gaji_id,
+            "guru_id" => $guru_id
+        ]);
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Content-Type: application/x-www-form-urlencoded"
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        // Debugging
+        if ($error) {
+            echo "cURL Error: " . $error;
+            return null;
+        } elseif ($httpCode !== 200) {
+            echo "HTTP Error Code: " . $httpCode;
+            return null;
+        }
+
+        return json_decode($response, true);
+    }
+
+    public function detail_gaji($id)
+    {
+        $data['datagaji'] = $this->model->getBy('gaji_detail', 'gaji_id', $id)->result();
+        $data['gajiId'] = $id;
+
+        $this->load->view('head');
+        $this->load->view('detail_gaji', $data);
+        $this->load->view('foot');
+    }
+
+    public function kirim_slip()
+    {
+        $id = $this->input->post('id', true);
+        // $data = $this->getListGaji($id, $this->key);
+        $data = $this->model->getListGaji($id)->result();
+
+        echo json_encode(['data' => $data]);
+    }
+
+    // public function buatslip($gaji_id, $guru_id)
+    public function buatslip()
+    {
+        $gaji_id = $this->input->post('gaji_id', true);
+        $guru_id = $this->input->post('guru_id', true);
+
+        // $data['data'] = $this->getRincian($gaji_id, $guru_id, $this->key);
+        // $data['potongan'] = $this->getPotongan($gaji_id, $guru_id, $this->key);
+
+        $data['data'] = $this->model->getRincian($gaji_id, $guru_id)->row_array();
+        $data['potongan'] = $this->model->getPotongan($gaji_id, $guru_id)->result_array();
+
+        $this->load->view('slip_nota', $data);
+    }
+
+    // File: application/controllers/Informasi.php
+
+    public function saveImage()
+    {
+        // Pastikan request berasal dari AJAX
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            $imgData = $this->input->post('image'); // Ambil data gambar dari request
+            $gaji_id = $this->input->post('gaji_id'); // Ambil ID gaji
+            $guru_id = $this->input->post('guru_id'); // Ambil ID guru
+            $nama = $this->input->post('nama'); // Ambil ID guru
+            $satminkal = $this->input->post('satminkal'); // Ambil ID guru
+            $hp = $this->input->post('hp'); // Ambil ID guru
+
+            // Bersihkan data gambar
+            $imgData = str_replace('data:image/png;base64,', '', $imgData);
+            $imgData = str_replace(' ', '+', $imgData);
+            $imageData = base64_decode($imgData);
+
+            // Buat nama file unik berdasarkan ID gaji dan ID guru
+            $filename = 'slip_gaji_' . $gaji_id . '_' . $guru_id . '_' . time() . '.png';
+            $filePath = FCPATH . 'template/assets/static/images/nota/' . $filename; // Path lengkap penyimpanan
+
+            // Simpan file gambar
+            if (file_put_contents($filePath, $imageData)) {
+                $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', '085236924510', base_url('template/assets/static/images/nota/' . $filename), 0, 'Slip gaji');
+                // $kirim = kirim_person('f4064efa9d05f66f9be6151ec91ad846', '085236924510', 'Slip gaji ' . $nama);
+                if ($kirim && $kirim['code'] == 200) {
+                    $statuscode = 200;
+                } else {
+                    $statuscode = 400;
+                }
+                $dataSave = [
+                    'gaji_id' => $gaji_id,
+                    'guru_id' => $guru_id,
+                    'nama' => $nama,
+                    'satminkal' => $satminkal,
+                    'hp' => $hp,
+                    'nota' => $filename,
+                    'status' => $statuscode,
+                ];
+                $saveResult = $this->model->simpan('gaji_detail', $dataSave);
+                if ($saveResult) {
+                    echo json_encode(['status' => 'success', 'Simpan data berhasil']);
+                } else {
+                    // Bisa tambahkan log error atau informasi lebih detail jika perlu
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data ke database']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan gambar']);
+            }
+        }
+    }
+
+    public function cekNota()
+    {
+        $id = $this->input->post('id', true);
+        $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
+        echo json_encode($data);
+    }
+    public function resend($id)
+    {
+        $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
+        $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', '085236924510', base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
+        if ($kirim && $kirim['code'] == 200) {
+            $this->session->set_flashdata('ok', 'Pengriman pesan berhasil');
+            redirect('informasi/detail_gaji/' . $data->gaji_id);
+        } else {
+            $this->session->set_flashdata('error', 'Pengriman pesan gagal');
+            redirect('informasi/detail_gaji/' . $data->gaji_id);
         }
     }
 }
