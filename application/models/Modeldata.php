@@ -134,6 +134,13 @@ class Modeldata extends CI_Model
         $this->flat->where('guru_id', $guru_id);
         return $this->flat->get();
     }
+    function getTambahan($id, $guru_id)
+    {
+        $this->flat->from('tambahan_detail');
+        $this->flat->where('gaji_id', $id);
+        $this->flat->where('guru_id', $guru_id);
+        return $this->flat->get();
+    }
 
     function getPotongan($id, $guru_id)
     {

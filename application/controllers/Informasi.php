@@ -390,6 +390,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         // $data['potongan'] = $this->getPotongan($gaji_id, $guru_id, $this->key);
 
         $data['data'] = $this->model->getRincian($gaji_id, $guru_id)->row_array();
+        $data['tambahan'] = $this->model->getTambahan($gaji_id, $guru_id)->result_array();
         $data['potongan'] = $this->model->getPotongan($gaji_id, $guru_id)->result_array();
 
         $this->load->view('slip_nota', $data);
@@ -419,7 +420,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
 
             // Simpan file gambar
             if (file_put_contents($filePath, $imageData)) {
-                $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', '085236924510', base_url('template/assets/static/images/nota/' . $filename), 0, 'Slip gaji');
+                $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', $hp, base_url('template/assets/static/images/nota/' . $filename), 0, 'Slip gaji');
                 // $kirim = kirim_person('f4064efa9d05f66f9be6151ec91ad846', '085236924510', 'Slip gaji ' . $nama);
                 if ($kirim && $kirim['code'] == 200) {
                     $statuscode = 200;
@@ -457,7 +458,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
     public function resend($id)
     {
         $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
-        $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', '085236924510', base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
+        $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', $data->hp, base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
         if ($kirim && $kirim['code'] == 200) {
             $this->session->set_flashdata('ok', 'Pengriman pesan berhasil');
             redirect('informasi/detail_gaji/' . $data->gaji_id);

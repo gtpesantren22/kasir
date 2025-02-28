@@ -98,7 +98,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-sm font-medium text-gray-700">Ket</td>
-                                    <td class="text-sm">: HR Flat Januari 2025</td>
+                                    <td class="text-sm">: HR Flat Februari 2025</td>
                                 </tr>
                             </table>
                         </div>
@@ -143,6 +143,12 @@
                                     <td class="text-sm font-medium text-gray-700">T. Penyesuaian</td>
                                     <td class="text-sm">: <?= rupiah($data['penyesuaian']) ?></td>
                                 </tr>
+                                <?php foreach ($tambahan as $tb): ?>
+                                    <tr>
+                                        <td class="text-sm font-medium text-gray-700"><?= $tb['nama'] ?></td>
+                                        <td class="text-sm">: <?= rupiah($tb['nominal']) ?></td>
+                                    </tr>
+                                <?php endforeach ?>
                             </table>
                         </div>
                         <div>
@@ -166,7 +172,7 @@
 
                 <div class="border-b border-gray-300 pb-3 mb-2">
                     <div class="grid grid-cols-2 gap-4">
-                        <?php $totalHonor = $data['gapok'] + $data['fungsional'] + $data['kinerja'] + $data['bpjs'] + $data['struktural'] + $data['walas'] + $data['penyesuaian'] ?>
+                        <?php $totalHonor = $data['gapok'] + $data['fungsional'] + $data['kinerja'] + $data['bpjs'] + $data['struktural'] + $data['walas'] + $data['penyesuaian'] + $data['tambahan'] ?>
                         <div>
                             <table class="w-full">
                                 <tr>
@@ -182,11 +188,11 @@
                         </div>
                         <div>
                             <!-- Jumlah diterima : -->
-                            <div class="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                                <p class="text-xl font-bold text-blue-600">
-                                    <?= rupiah($totalHonor - $totalPotong) ?>
-                                </p>
+                            <div class="p-3 bg-blue-50 rounded-lg border border-blue-200 flex justify-between items-center">
+                                <p class="text-xl font-bold text-blue-600">Diterima :</p>
+                                <p class="text-xl font-bold text-blue-600"><?= rupiah($totalHonor - $totalPotong) ?></p>
                             </div>
+
                         </div>
                     </div>
                 </div>
