@@ -483,7 +483,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
                     'nota' => $filename,
                 ];
                 $this->model->edit('gaji_detail', 'id_detail', $id_detail, $dataSave);
-                if ($this->db->afected_rows() > 0) {
+                if ($this->db->affected_rows() > 0) {
                     echo json_encode(['status' => 'success', 'message' => 'Simpan data berhasil']);
                 } else {
                     // Bisa tambahkan log error atau informasi lebih detail jika perlu

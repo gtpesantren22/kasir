@@ -235,8 +235,8 @@
                             console.error(response.message);
                         }
                     },
-                    error: function() {
-                        console.error("Terjadi kesalahan AJAX");
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
                     }
                 });
             });
