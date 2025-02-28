@@ -207,3 +207,39 @@
 
 </div>
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    window.onload = function() {
+        var gaji_id = <?= json_encode($data['gaji_id']) ?>;
+        var guru_id = <?= json_encode($data['guru_id']) ?>;
+        var id_detail = <?= json_encode($detail['id_detail']) ?>;
+        setTimeout(() => { // Beri jeda agar halaman sepenuhnya dimuat
+            html2canvas(document.querySelector("#capture")).then(canvas => {
+                let imageData = canvas.toDataURL("image/png"); // Ubah canvas ke base64
+                $.ajax({
+                    url: "<?= base_url('informasi/saveNewImage') ?>",
+                    type: "POST",
+                    data: {
+                        image: imageData,
+                        gaji_id: gaji_id,
+                        guru_id: guru_id,
+                        id_detail: id_detail
+                    },
+                    dataType: "json",
+                    success: function(response) {
+                        if (response.status === "success") {
+                            window.history.back();
+                            console.error(response.message);
+                        } else {
+                            console.error(response.message);
+                        }
+                    },
+                    error: function() {
+                        console.error("Terjadi kesalahan AJAX");
+                    }
+                });
+            });
+        }, 1000);
+    };
+</script>

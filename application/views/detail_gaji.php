@@ -36,7 +36,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-xl-12">
-                    <table class="table table-xs table-striped table-bordered" id="table1">
+                    <table class="table table-xs table-striped table-bordered table-hover" id="table1">
                         <thead>
                             <tr>
                                 <td>No</td>
@@ -61,6 +61,7 @@
                                     <td><?= $gaji->status == 200 ? "<i class='bi bi-check-circle text-success'> sukses</i>" : "<i class='bi bi-times-circle text-danger'> gagal</i>" ?></td>
                                     <td>
                                         <button class="btn btn-primary btn-sm cek-nota" data-id="<?= $gaji->id_detail ?>"><i class="bi bi-search">Cek Nota</i></button>
+                                        <a class="btn btn-warning btn-sm" href="<?= base_url('informasi/newslip/' . $gaji->gaji_id . '/' . $gaji->guru_id) ?>"><i class="bi bi-reload">Buat Ulang</i></a>
                                     </td>
                                     <td>
                                         <button class="btn btn-success btn-sm" onclick="window.location='<?= base_url('informasi/resend/' . $gaji->id_detail) ?>'"><i class="bi bi-send"></i> Kirim Ulang</button>

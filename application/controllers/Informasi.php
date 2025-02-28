@@ -395,6 +395,15 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
 
         $this->load->view('slip_nota', $data);
     }
+    public function newslip($gaji_id, $guru_id)
+    {
+        $data['detail'] = $this->model->getBy2('gaji_detail', 'gaji_id', $gaji_id, 'guru_id',  $guru_id)->row_array();
+        $data['data'] = $this->model->getRincian($gaji_id, $guru_id)->row_array();
+        $data['tambahan'] = $this->model->getTambahan($gaji_id, $guru_id)->result_array();
+        $data['potongan'] = $this->model->getPotongan($gaji_id, $guru_id)->result_array();
+
+        $this->load->view('slip_nota_new', $data);
+    }
 
     // File: application/controllers/Informasi.php
 
@@ -420,13 +429,6 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
 
             // Simpan file gambar
             if (file_put_contents($filePath, $imageData)) {
-                $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', $hp, base_url('template/assets/static/images/nota/' . $filename), 0, 'Slip gaji');
-                // $kirim = kirim_person('f4064efa9d05f66f9be6151ec91ad846', '085236924510', 'Slip gaji ' . $nama);
-                if ($kirim && $kirim['code'] == 200) {
-                    $statuscode = 200;
-                } else {
-                    $statuscode = 400;
-                }
                 $dataSave = [
                     'gaji_id' => $gaji_id,
                     'guru_id' => $guru_id,
@@ -434,11 +436,55 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
                     'satminkal' => $satminkal,
                     'hp' => $hp,
                     'nota' => $filename,
-                    'status' => $statuscode,
+                    'status' => 400,
                 ];
                 $saveResult = $this->model->simpan('gaji_detail', $dataSave);
                 if ($saveResult) {
                     echo json_encode(['status' => 'success', 'Simpan data berhasil']);
+                } else {
+                    // Bisa tambahkan log error atau informasi lebih detail jika perlu
+                    echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data ke database']);
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan gambar']);
+            }
+        }
+    }
+
+    public function saveNewImage()
+    {
+        // Pastikan request berasal dari AJAX
+        if ($this->input->server('REQUEST_METHOD') === 'POST') {
+            $imgData = $this->input->post('image'); // Ambil data gambar dari request
+            $gaji_id = $this->input->post('gaji_id'); // Ambil ID gaji
+            $guru_id = $this->input->post('guru_id'); // Ambil ID guru
+            $id_detail = $this->input->post('id_detail'); // Ambil ID guru
+
+            // Bersihkan data gambar
+            $imgData = str_replace('data:image/png;base64,', '', $imgData);
+            $imgData = str_replace(' ', '+', $imgData);
+            $imageData = base64_decode($imgData);
+
+            // Buat nama file unik berdasarkan ID gaji dan ID guru
+            $filename = 'slip_gaji_' . $gaji_id . '_' . $guru_id . '_' . time() . '.png';
+            $path = FCPATH . 'template/assets/static/images/nota/';
+            $filePath = $path . $filename; // Path lengkap penyimpanan
+
+            $oldImage = $this->model->getBy('gaji_detail', 'id_detail', $id_detail)->row('nota');
+
+            // Hapus gambar lama jika ada dan file tersebut masih ada di folder
+            if ($oldImage && file_exists($path . $oldImage)) {
+                unlink($path . $oldImage);
+            }
+
+            // Simpan file gambar
+            if (file_put_contents($filePath, $imageData)) {
+                $dataSave = [
+                    'nota' => $filename,
+                ];
+                $this->model->edit('gaji_detail', 'id_detail', $id_detail, $dataSave);
+                if ($this->db->afected_rows() > 0) {
+                    echo json_encode(['status' => 'success', 'message' => 'Simpan data berhasil']);
                 } else {
                     // Bisa tambahkan log error atau informasi lebih detail jika perlu
                     echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan data ke database']);
@@ -460,6 +506,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
         $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', $data->hp, base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
         if ($kirim && $kirim['code'] == 200) {
+            $this->model->edit('gaji_detail', 'id_detail', $id, ['status' => 200]);
             $this->session->set_flashdata('ok', 'Pengriman pesan berhasil');
             redirect('informasi/detail_gaji/' . $data->gaji_id);
         } else {
