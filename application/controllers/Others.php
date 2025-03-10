@@ -77,4 +77,10 @@ class Others extends CI_Controller
 
         $this->load->view('cetak_lain', $data);
     }
+    public function printV2($id)
+    {
+        $data['data'] = $this->model->getBy('others', 'id_other', $id)->row();
+
+        $this->load->view('cetak_lain2', $data);
+    }
 }

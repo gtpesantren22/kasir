@@ -28,7 +28,8 @@
                             <td><?= $r->tanggal; ?></td>
                             <td>
                                 <a href="<?= base_url('others/print/' . $r->id_other) ?>" target="_blank"><i class="bi bi-printer text-primary"></i></a> |
-                                <a href="<?= base_url('others/delBayar/' . $r->id_other) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
+                                <a href="<?= base_url('others/delBayar/' . $r->id_other) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a> |
+                                <a href="<?= base_url('others/printV2/' . $r->id_other) ?>" target="_blank"><i class="bi bi-printer-fill text-success"></i></a> 
                             </td>
                         </tr>
                     <?php } ?>
