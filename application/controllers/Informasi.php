@@ -364,7 +364,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
     public function detail_gaji($id)
     {
         // $data['datagaji'] = $this->model->getBy('gaji_detail', 'gaji_id', $id)->result();
-        $data['datagaji'] = $this->db->query("SELECT * FROM gaji_detail WHERE gaji_id = '$id' ORDER BY status DESC")->result();
+        $data['datagaji'] = $this->db->query("SELECT * FROM gaji_detail WHERE gaji_id = '$id' ORDER BY status ASC")->result();
         $data['gajiId'] = $id;
 
         $this->load->view('head');
