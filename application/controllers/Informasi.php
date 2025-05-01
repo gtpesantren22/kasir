@@ -371,6 +371,36 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         $this->load->view('foot');
     }
 
+    public function generateSlip($gaji_id)
+    {
+        $data = $this->model->getListGaji($gaji_id)->result();
+
+        // echo "<pre>";
+        // var_dump($data);
+        // echo "</pre>";
+        foreach ($data as $value) {
+            $dataSave = [
+                'gaji_id' => $value->gaji_id,
+                'bulan' => $value->bulan,
+                'tahun' => $value->tahun,
+                'guru_id' => $value->guru_id,
+                'nama' => $value->nama,
+                'satminkal' => $value->satminkal,
+                'hp' => $value->hp,
+            ];
+
+            $this->model->simpan('gaji_detail', $dataSave);
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Download data berhasil');
+            redirect('informasi/detail_gaji/' . $gaji_id);
+        } else {
+            $this->session->set_flashdata('error', 'Download data gagal');
+            redirect('informasi/detail_gaji/' . $gaji_id);
+        }
+    }
+
     public function kirim_slip()
     {
         $id = $this->input->post('id', true);
@@ -397,12 +427,22 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
     }
     public function newslip($gaji_id, $guru_id)
     {
-        $data['detail'] = $this->model->getBy2('gaji_detail', 'gaji_id', $gaji_id, 'guru_id',  $guru_id)->row_array();
+        $data['detail'] = $this->model->getBy2('gaji_detail', 'gaji_id', $gaji_id, 'guru_id', $guru_id)->row_array();
         $data['data'] = $this->model->getRincian($gaji_id, $guru_id)->row_array();
         $data['tambahan'] = $this->model->getTambahan($gaji_id, $guru_id)->result_array();
         $data['potongan'] = $this->model->getPotongan($gaji_id, $guru_id)->result_array();
 
         $this->load->view('slip_nota_new', $data);
+    }
+
+    public function sendnewslip($gaji_id, $guru_id)
+    {
+        $data['detail'] = $this->model->getBy2('gaji_detail', 'gaji_id', $gaji_id, 'guru_id',  $guru_id)->row_array();
+        $data['data'] = $this->model->getRincian($gaji_id, $guru_id)->row_array();
+        $data['tambahan'] = $this->model->getTambahan($gaji_id, $guru_id)->result_array();
+        $data['potongan'] = $this->model->getPotongan($gaji_id, $guru_id)->result_array();
+
+        $this->load->view('slip_nota_new2', $data);
     }
 
     // File: application/controllers/Informasi.php
@@ -501,6 +541,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
         echo json_encode($data);
     }
+
     public function resend($id)
     {
         $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
@@ -512,6 +553,20 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         } else {
             $this->session->set_flashdata('error', 'Pengriman pesan gagal');
             redirect('informasi/detail_gaji/' . $data->gaji_id);
+        }
+    }
+    public function sendNewNota()
+    {
+        $id = $this->input->post('id_detail', true);
+
+        $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
+        $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', $data->hp, base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
+        // $kirim = kirim_media('f4064efa9d05f66f9be6151ec91ad846', '085236924510', base_url('template/assets/static/images/nota/' . $data->nota), 0, 'Slip gaji');
+        if ($kirim && $kirim['code'] == 200) {
+            $this->model->edit('gaji_detail', 'id_detail', $id, ['status' => 200]);
+            echo json_encode(['status' => 'success', 'message' => 'kirim data berhasil (backend)']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'kirim data gagal (backend)']);
         }
     }
 }

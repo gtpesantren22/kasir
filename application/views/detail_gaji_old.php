@@ -29,6 +29,8 @@
     <div class="card">
         <div class="card-header">
             <h4b>
+                <!-- Detail pengiriman slip gaji -->
+                <!-- <button class="btn btn-sm btn-success pull-right" id="button-kirim" data-id="<?= $gajiId ?>"><i class="bi bi-envelope"></i> Kirim Slip Gaji</button> -->
                 <button onclick="window.location.href='<?= base_url('informasi/generateSlip/' . $gajiId) ?>'" class="btn btn-sm btn-success pull-right"><i class="bi bi-envelope"></i> Download Data Gaji</button>
             </h4b>
         </div>
@@ -63,7 +65,7 @@
                                         <a class="btn btn-warning btn-sm" href="<?= base_url('informasi/newslip/' . $gaji->gaji_id . '/' . $gaji->guru_id) ?>"><i class="bi bi-reload">Buat Ulang</i></a>
                                     </td>
                                     <td>
-                                        <button class="btn btn-success btn-sm" onclick="window.location='<?= base_url('informasi/sendnewslip/' . $gaji->gaji_id . '/' . $gaji->guru_id) ?>'"><i class="bi bi-send"></i> Kirim Ulang</button>
+                                        <button class="btn btn-success btn-sm" onclick="window.location='<?= base_url('informasi/resend/' . $gaji->id_detail) ?>'"><i class="bi bi-send"></i> Kirim Ulang</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

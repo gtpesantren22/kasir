@@ -123,8 +123,10 @@ class Modeldata extends CI_Model
 
     function getListGaji($id)
     {
+        $this->flat->select('gaji_detail.*, gaji.bulan, gaji.tahun');
         $this->flat->from('gaji_detail');
-        $this->flat->where('gaji_id', $id);
+        $this->flat->join('gaji', 'gaji_detail.gaji_id=gaji.gaji_id');
+        $this->flat->where('gaji_detail.gaji_id', $id);
         return $this->flat->get();
     }
     function getRincian($id, $guru_id)

@@ -229,8 +229,28 @@
                     dataType: "json",
                     success: function(response) {
                         if (response.status === "success") {
-                            window.history.back();
-                            console.error(response.message);
+                            // window.history.back();
+                            $.ajax({
+                                url: "<?= base_url('informasi/sendNewNota') ?>",
+                                type: "POST",
+                                data: {
+                                    id_detail: id_detail
+                                },
+                                dataType: "json",
+                                success: function(response) {
+                                    if (response.status === "success") {
+                                        console.log('Success kirin info');
+
+                                        window.history.back();
+                                    } else {
+                                        console.error(response.message);
+                                        console.log('gagal kirin info');
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                }
+                            });
                         } else {
                             console.error(response.message);
                         }
@@ -240,6 +260,6 @@
                     }
                 });
             });
-        }, 1000);
+        }, 5000);
     };
 </script>
