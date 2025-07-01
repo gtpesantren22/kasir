@@ -71,7 +71,7 @@ function kirim_person($key, $no_hp, $pesan)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMessage',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendMessage',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -94,7 +94,7 @@ function kirim_group($key, $id_group, $pesan)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMessageGroup',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendMessageGroup',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -115,7 +115,7 @@ function kirim_tmp($key, $no_hp, $pesan, $tmp, $link_logo)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendTemplateMessage',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendTemplateMessage',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -136,7 +136,7 @@ function kirim_nota($key, $no_hp, $url_file, $as_document, $caption)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMediaFromUrl',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendMediaFromUrl',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -220,7 +220,7 @@ function kirim_person2($key, $no_hp, $pesan)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMessage',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendMessage',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
@@ -243,7 +243,7 @@ function kirim_media($key, $hp, $nama_file, $as_doc, $capt)
     curl_setopt_array(
         $curl2,
         array(
-            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMediaFromUrl',
+            CURLOPT_URL => 'http://31.97.179.141:3000/api/sendMediaFromUrl',
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => '',
             CURLOPT_MAXREDIRS => 10,
