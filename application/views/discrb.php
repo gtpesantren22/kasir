@@ -87,7 +87,7 @@
                                         <div class="form-group mb-2">
                                             <label for="exampleInputEmail1">Pindah Tempat</label>
                                             <select name="t_kos" class="form-control" required>
-                                                <?php $tmp = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Zulfa", "Ny. Lathifah", "Ny. Ummi Kultsum");
+                                                <?php $tmp = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Zulfa", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
                                                 for ($a = 0; $a < count($tmp); $a++) : ?>
                                                     <option <?= $a == $sn->t_kos ? 'selected' : '' ?> value="<?= $a ?>"><?= kosan($a) ?></option>
                                                 <?php endfor ?>
