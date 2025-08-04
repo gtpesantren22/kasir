@@ -14,7 +14,8 @@ class Tabungan extends CI_Controller
         $user = $this->Auth_model->current_user('nama');
         $this->user = $user->nama;
         $this->load->model('Modeldata', 'model');
-        $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
+        // $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
+        $this->tahun = '2024/2025';
     }
 
     public function index()

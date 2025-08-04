@@ -181,11 +181,47 @@
                             </ul>
                         </li>
                         <div class="divider"></div>
+                        <?php $thn = $this->db->query("SELECT * FROM settings WHERE namaset = 'tahun' ")->row(); ?>
+                        <button class="btn btn-sm btn-block btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#uploadData">Tukar Tahun</button>
                         <button class="btn btn-sm btn-block btn-danger" onclick="window.location.href='<?= base_url('login/logout') ?>'">LogOut</button>
                     </ul>
                 </div>
             </div>
         </div>
+
+        <!-- Pindah tahun -->
+        <div class="modal fade text-left" id="uploadData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="myModalLabel4">Ganti Tahun</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <i data-feather="x"></i>
+                        </button>
+                    </div>
+                    <?= form_open_multipart('home/gantiTahun') ?>
+                    <div class="modal-body">
+                        <div class="form-group mb-2">
+                            <label for="exampleInputEmail1">Isi tahun</label>
+                            <input type="text" name="tahun" class="form-control" value="<?= $thn->isiset ?>" required>
+                            <small>*Cara pengisian : 2024/2025 (contoh)</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                            <i class="bx bx-x d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Close</span>
+                        </button>
+                        <button type="submit" class="btn btn-primary ms-1">
+                            <i class="bx bx-check d-block d-sm-none"></i>
+                            <span class="d-none d-sm-block">Simpan</span>
+                        </button>
+                    </div>
+                    <?= form_close() ?>
+                </div>
+            </div>
+        </div>
+
         <div id="main">
             <header class="mb-3">
                 <a href="#" class="burger-btn d-block d-xl-none">

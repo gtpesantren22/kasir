@@ -25,11 +25,16 @@ class Home extends CI_Controller
         $data['masuk'] = $bp->jml + $setor->jml;
         $data['keluar'] = $this->model->getBySum('pengeluaran', 'tahun', $this->tahun, 'nominal')->row();
         $data['saldo'] = $data['masuk'] - $data['keluar']->jml;
+        $data['tahun'] = $this->tahun;
 
         $this->load->view('head');
         $this->load->view('index', $data);
         $this->load->view('foot');
     }
-
-    
+    public function gantiTahun()
+    {
+        $tahun = $this->input->post('tahun', true);
+        $this->model->edit('settings', 'namaset', 'tahun', ['isiset' => $tahun]);
+        redirect('home');
+    }
 }
