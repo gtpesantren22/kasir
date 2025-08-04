@@ -20,7 +20,7 @@ class Bp extends CI_Controller
 
         $this->load->model('Modeldata', 'model');
 
-        $this->tahun = '2024/2025';
+        $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
         $this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     }
 

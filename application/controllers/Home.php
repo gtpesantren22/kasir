@@ -13,7 +13,7 @@ class Home extends CI_Controller
         }
 
         $this->load->model('Modeldata', 'model');
-        $this->tahun = '2024/2025';
+        $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
     }
 
     public function index()
