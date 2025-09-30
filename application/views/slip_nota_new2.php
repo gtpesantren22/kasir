@@ -143,12 +143,16 @@
                                     <td class="text-sm font-medium text-gray-700">T. Penyesuaian</td>
                                     <td class="text-sm">: <?= rupiah($data['penyesuaian']) ?></td>
                                 </tr>
-                                <?php foreach ($tambahan as $tb): ?>
-                                    <tr>
-                                        <td class="text-sm font-medium text-gray-700"><?= $tb['nama'] ?></td>
-                                        <td class="text-sm">: <?= rupiah($tb['nominal']) ?></td>
-                                    </tr>
-                                <?php endforeach ?>
+                                <?php
+                                if ($tambahan) {
+                                    echo "<tr><td class='text-sm font-medium text-gray-700'>T. Tambahan :</td></tr>";
+                                    foreach ($tambahan as $tb): ?>
+                                        <tr>
+                                            <td class="text-sm font-medium text-gray-700">- <?= $tb['nama'] ?></td>
+                                            <td class="text-sm">: <?= rupiah($tb['nominal']) ?></td>
+                                        </tr>
+                                <?php endforeach;
+                                } ?>
                             </table>
                         </div>
                         <div>
