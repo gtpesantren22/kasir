@@ -582,7 +582,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         }
 
         // Nama baru saat download (misal tambah timestamp)
-        $newName = $datas->nama . "_" . date('M', strtotime($datas->bulan)) . date('Y', strtotime($datas->tahun)) . '.' . pathinfo($datas->nota, PATHINFO_EXTENSION);
+        $newName = $datas->nama . "_" . date('M', mktime(0, 0, 0, $datas->bulan, 1)) . date('Y', strtotime($datas->tahun)) . '.' . pathinfo($datas->nota, PATHINFO_EXTENSION);
 
 
         // Load helper
