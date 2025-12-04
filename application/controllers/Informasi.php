@@ -571,23 +571,25 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         }
     }
 
-    public function downloadSlip($filename = null)
+    public function downloadSlip($id)
     {
-        if (!$filename) {
-            show_404();
-        }
-
+        $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
         // Path file di folder downloads/
-        $filePath = FCPATH . 'template/assets/static/images/nota/' . $filename;
+        $filePath = FCPATH . 'template/assets/static/images/nota/' . $data->nota;
 
         if (!file_exists($filePath)) {
             show_404();
         }
 
+        // Nama baru saat download (misal tambah timestamp)
+        $newName = $data->nama . "_" . date('m', strtotime($data->bulan)) . date('Y', strtotime($data->tahun)) . '.' . pathinfo($data->nota, PATHINFO_EXTENSION);
+
+
         // Load helper
         $this->load->helper('download');
+        $data = file_get_contents($filePath);
 
         // Force download
-        force_download($filePath, NULL);
+        force_download($newName, $data);
     }
 }
