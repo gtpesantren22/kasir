@@ -573,16 +573,16 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
 
     public function downloadSlip($id)
     {
-        $data = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
+        $datas = $this->model->getBy('gaji_detail', 'id_detail', $id)->row();
         // Path file di folder downloads/
-        $filePath = FCPATH . 'template/assets/static/images/nota/' . $data->nota;
+        $filePath = FCPATH . 'template/assets/static/images/nota/' . $datas->nota;
 
         if (!file_exists($filePath)) {
             show_404();
         }
 
         // Nama baru saat download (misal tambah timestamp)
-        $newName = $data->nama . "_" . date('m', strtotime($data->bulan)) . date('Y', strtotime($data->tahun)) . '.' . pathinfo($data->nota, PATHINFO_EXTENSION);
+        $newName = $datas->nama . "_" . date('M', strtotime($datas->bulan)) . date('Y', strtotime($datas->tahun)) . '.' . pathinfo($datas->nota, PATHINFO_EXTENSION);
 
 
         // Load helper
