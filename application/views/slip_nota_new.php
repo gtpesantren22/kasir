@@ -135,10 +135,10 @@
                                     <td class="text-sm font-medium text-gray-700">T. Struktural</td>
                                     <td class="text-sm">: <?= rupiah($data['struktural']) ?></td>
                                 </tr>
-                                <tr>
+                                <!-- <tr>
                                     <td class="text-sm font-medium text-gray-700">T. Wali Kelas</td>
                                     <td class="text-sm">: <?= rupiah($data['walas']) ?></td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td class="text-sm font-medium text-gray-700">T. Penyesuaian</td>
                                     <td class="text-sm">: <?= rupiah($data['penyesuaian']) ?></td>

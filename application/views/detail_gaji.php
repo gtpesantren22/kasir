@@ -61,6 +61,7 @@
                                     <td>
                                         <button class="btn btn-primary btn-sm cek-nota" data-id="<?= $gaji->id_detail ?>"><i class="bi bi-search">Cek Nota</i></button>
                                         <a class="btn btn-warning btn-sm" href="<?= base_url('informasi/newslip/' . $gaji->gaji_id . '/' . $gaji->guru_id) ?>"><i class="bi bi-reload">Buat Ulang</i></a>
+                                        <a class="btn btn-success btn-sm" href="<?= base_url('informasi/downloadSlip/' . $gaji->nota) ?>"><i class="bi bi-download"></i></a>
                                     </td>
                                     <td>
                                         <button class="btn btn-success btn-sm" onclick="window.location='<?= base_url('informasi/sendnewslip/' . $gaji->gaji_id . '/' . $gaji->guru_id) ?>'"><i class="bi bi-send"></i> Kirim Ulang</button>

@@ -364,7 +364,7 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
     public function detail_gaji($id)
     {
         // $data['datagaji'] = $this->model->getBy('gaji_detail', 'gaji_id', $id)->result();
-        $data['datagaji'] = $this->db->query("SELECT * FROM gaji_detail WHERE gaji_id = '$id' ORDER BY status ASC")->result();
+        $data['datagaji'] = $this->db->query("SELECT * FROM gaji_detail WHERE gaji_id = '$id' ORDER BY status ASC, satminkal ASC, nama ASC")->result();
         $data['gajiId'] = $id;
 
         $this->load->view('head');
@@ -569,5 +569,25 @@ _Jika Anda telah membayar tagihan tersebut, silakan abaikan pesan ini._';
         } else {
             echo json_encode(['status' => 'error', 'message' => 'kirim data gagal (backend)']);
         }
+    }
+
+    public function downloadSlip($filename = null)
+    {
+        if (!$filename) {
+            show_404();
+        }
+
+        // Path file di folder downloads/
+        $filePath = FCPATH . 'template/assets/static/images/nota/' . $filename;
+
+        if (!file_exists($filePath)) {
+            show_404();
+        }
+
+        // Load helper
+        $this->load->helper('download');
+
+        // Force download
+        force_download($filePath, NULL);
     }
 }
