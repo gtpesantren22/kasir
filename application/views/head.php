@@ -182,7 +182,7 @@
                         </li>
                         <div class="divider"></div>
                         <?php $thn = $this->db->query("SELECT * FROM settings WHERE namaset = 'tahun' ")->row(); ?>
-                        <button class="btn btn-sm btn-block btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#uploadData">Tukar Tahun</button>
+                        <button class="btn btn-sm btn-block btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#tkartahun">Tukar Tahun</button>
                         <button class="btn btn-sm btn-block btn-danger" onclick="window.location.href='<?= base_url('login/logout') ?>'">LogOut</button>
                     </ul>
                 </div>
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Pindah tahun -->
-        <div class="modal fade text-left" id="uploadData" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
+        <div class="modal fade text-left" id="tkartahun" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" data-bs-backdrop="false" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
