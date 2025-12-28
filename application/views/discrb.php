@@ -229,7 +229,7 @@
                 <div class="col-md-2">
                     <p>Printer Aktif</p>
                     <span class="badge bg-primary mb-2"><?= $this->session->userdata('printername') ?? '-' ?></span>
-                    <form action="<?= base_url('esaku/changePrinter') ?>" method="post">
+                    <form action="<?= base_url('bp/changePrinter') ?>" method="post">
                         <input type="hidden" name="nis" value="<?= $sn->nis; ?>">
                         <div class="form-group">
                             <!-- <label for="">Pilih</label> -->
