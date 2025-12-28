@@ -295,7 +295,7 @@
                                         <td><?= $r->kasir; ?></td>
                                         <td>
                                             <!-- <a href="<?= base_url('bp/cetak/' . $r->id_bayar) ?>"><i class="bi bi-printer-fill text-success"></i></a> -->
-                                            <a onclick="cetakStruk(<?= $r->id_bayar ?>)"><i class="bi bi-printer-fill text-success"></i></a>
+                                            <a onclick="cetakStruk('<?= $r->id_bayar ?>')"><i class="bi bi-printer-fill text-success"></i></a>
                                             <a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
                                         </td>
                                     </tr>
