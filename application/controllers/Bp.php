@@ -293,94 +293,95 @@ class Bp extends CI_Controller
 
         $this->load->view('cetak', $data);
     }
-    public function cetak($id)
-    {
-        $dataNota = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
-        $user = $this->Auth_model->current_user();
-        $tangg = $this->model->getBy2Sentral('tangg', 'nis', $dataNota->nis, 'tahun', $this->tahun)->row();
-        $dataSantri = $this->model->getBy('tb_santri', 'nis', $dataNota->nis)->row();
-        $tahun = $this->tahun;
-        $sett = $this->model->getBy('settings', 'namaset', 'ipprinter')->row();
 
-        // echo $sett->isiset;
-        try {
-            // Tentukan IP dan port printer POS
-            $connector = new NetworkPrintConnector("$sett->isiset", 9100);
+    // public function cetak($id)
+    // {
+    //     $dataNota = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
+    //     $user = $this->Auth_model->current_user();
+    //     $tangg = $this->model->getBy2Sentral('tangg', 'nis', $dataNota->nis, 'tahun', $this->tahun)->row();
+    //     $dataSantri = $this->model->getBy('tb_santri', 'nis', $dataNota->nis)->row();
+    //     $tahun = $this->tahun;
+    //     $sett = $this->model->getBy('settings', 'namaset', 'ipprinter')->row();
 
-            // Inisialisasi printer
-            $printer = new Printer($connector);
-            // Mulai mencetak
-            $printer->setFont(Printer::FONT_B);
-            $printer->setJustification(Printer::JUSTIFY_CENTER);
-            $printer->setTextSize(2, 2);
-            $printer->text("KWITANSI PEMBAYARAN BP\n");
-            $printer->text("\n");
-            $printer->text("Ponpes Darul Lughah Wal Karomah\n");
-            $printer->feed();
-            $printer->setTextSize(1, 1);
-            $printer->text("Jl. Mayjend Pandjaitan No.12 Kel. Sidomukti - Kraksaan - Probolinggo - Jawa Timur\n");
-            $printer->text("───────────────────────────────────────────────────────────────\n");
-            // $printer->feed();
-            $printer->setJustification(Printer::JUSTIFY_LEFT);
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+    //     // echo $sett->isiset;
+    //     try {
+    //         // Tentukan IP dan port printer POS
+    //         $connector = new NetworkPrintConnector("$sett->isiset", 9100);
 
-            $printer->setTextSize(1, 1);
-            $printer->text("Tanggal : " . date('d-m-Y H:i:s') . "\n");
-            $printer->text("Kasir : $user->nama\n");
-            $printer->text("Ket : Pembayaran BP\n");
-            $printer->feed();
+    //         // Inisialisasi printer
+    //         $printer = new Printer($connector);
+    //         // Mulai mencetak
+    //         $printer->setFont(Printer::FONT_B);
+    //         $printer->setJustification(Printer::JUSTIFY_CENTER);
+    //         $printer->setTextSize(2, 2);
+    //         $printer->text("KWITANSI PEMBAYARAN BP\n");
+    //         $printer->text("\n");
+    //         $printer->text("Ponpes Darul Lughah Wal Karomah\n");
+    //         $printer->feed();
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Jl. Mayjend Pandjaitan No.12 Kel. Sidomukti - Kraksaan - Probolinggo - Jawa Timur\n");
+    //         $printer->text("───────────────────────────────────────────────────────────────\n");
+    //         // $printer->feed();
+    //         $printer->setJustification(Printer::JUSTIFY_LEFT);
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
 
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
-            $printer->text("Diterima dari:\n");
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
-            $printer->setTextSize(1, 1);
-            $printer->text(gabung2Kolom('No. Briva', " : $tangg->briva", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Nama', " : $dataSantri->nama", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Alamat', " : $dataSantri->desa-$dataSantri->kec-$dataSantri->kab", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Kelas', " : $dataSantri->k_formal $dataSantri->jurusan $dataSantri->t_formal", 10, 38) . "\n");
-            $printer->feed();
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
-            $printer->text("Rincian:\n");
-            $printer->selectPrintMode(Printer::MODE_EMPHASIZED);
-            $printer->setTextSize(1, 1);
-            $printer->text(gabung2Kolom('Tgl Bayar', " : $dataNota->tgl", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Nominal', ' : ' . rupiah($dataNota->nominal), 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Penerima', " : $dataNota->kasir", 10, 38) . "\n");
-            $printer->text(gabung2Kolom('Ket', " : $dataNota->bulan", 10, 38) . "\n");
-            $printer->feed();
-            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
-            $printer->setTextSize(1, 1);
-            $printer->text("Catatan:\n");
-            $printer->text("Bukti pembayaran ini DISIMPAN oleh wali santri sebagai bukti pembayaran Biaya Pendidikan (BP) PonPesa Darul Lughah Wal Karomah tahun pelajaran $tahun\n");
-            $printer->feed();
-            $printer->text("Hal-hal yang berkaitan dengan teknis keuangan dapat menghubungi Contact Person berikut\n");
-            $printer->selectPrintMode(Printer::MODE_UNDERLINE | Printer::MODE_EMPHASIZED);
-            $printer->setTextSize(1, 1);
-            $printer->text("0823-2964-1926\n");
-            $printer->feed();
-            // $printer->selectPrintMode(Printer::JUSTIFY_RIGHT);
-            $printer->text("Kraksaan, " . date('d-m-Y') . "\n");
-            $printer->feed();
-            $printer->feed();
-            $printer->feed();
-            $printer->text("Benahara Pesantren\n");
-            $printer->feed();
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Tanggal : " . date('d-m-Y H:i:s') . "\n");
+    //         $printer->text("Kasir : $user->nama\n");
+    //         $printer->text("Ket : Pembayaran BP\n");
+    //         $printer->feed();
 
-            // Potong kertas
-            $printer->cut();
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+    //         $printer->text("Diterima dari:\n");
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text(gabung2Kolom('No. Briva', " : $tangg->briva", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Nama', " : $dataSantri->nama", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Alamat', " : $dataSantri->desa-$dataSantri->kec-$dataSantri->kab", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Kelas', " : $dataSantri->k_formal $dataSantri->jurusan $dataSantri->t_formal", 10, 38) . "\n");
+    //         $printer->feed();
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+    //         $printer->text("Rincian:\n");
+    //         $printer->selectPrintMode(Printer::MODE_EMPHASIZED);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text(gabung2Kolom('Tgl Bayar', " : $dataNota->tgl", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Nominal', ' : ' . rupiah($dataNota->nominal), 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Penerima', " : $dataNota->kasir", 10, 38) . "\n");
+    //         $printer->text(gabung2Kolom('Ket', " : $dataNota->bulan", 10, 38) . "\n");
+    //         $printer->feed();
+    //         $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("Catatan:\n");
+    //         $printer->text("Bukti pembayaran ini DISIMPAN oleh wali santri sebagai bukti pembayaran Biaya Pendidikan (BP) PonPesa Darul Lughah Wal Karomah tahun pelajaran $tahun\n");
+    //         $printer->feed();
+    //         $printer->text("Hal-hal yang berkaitan dengan teknis keuangan dapat menghubungi Contact Person berikut\n");
+    //         $printer->selectPrintMode(Printer::MODE_UNDERLINE | Printer::MODE_EMPHASIZED);
+    //         $printer->setTextSize(1, 1);
+    //         $printer->text("0823-2964-1926\n");
+    //         $printer->feed();
+    //         // $printer->selectPrintMode(Printer::JUSTIFY_RIGHT);
+    //         $printer->text("Kraksaan, " . date('d-m-Y') . "\n");
+    //         $printer->feed();
+    //         $printer->feed();
+    //         $printer->feed();
+    //         $printer->text("Benahara Pesantren\n");
+    //         $printer->feed();
 
-            // Tutup koneksi ke printer
-            $printer->close();
+    //         // Potong kertas
+    //         $printer->cut();
 
-            // Berikan respon sukses ke client
-            redirect('bp/discrb/' . $dataNota->nis);
-        } catch (Exception $e) {
-            // Jika ada kesalahan
-            // redirect('bp/discrb/' . $dataNota->nis);
-            // echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
-            echo $e->getMessage();
-        }
-    }
+    //         // Tutup koneksi ke printer
+    //         $printer->close();
+
+    //         // Berikan respon sukses ke client
+    //         redirect('bp/discrb/' . $dataNota->nis);
+    //     } catch (Exception $e) {
+    //         // Jika ada kesalahan
+    //         // redirect('bp/discrb/' . $dataNota->nis);
+    //         // echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+    //         echo $e->getMessage();
+    //     }
+    // }
 
     public function piutang()
     {

@@ -168,7 +168,8 @@ class Esaku extends CI_Controller
             'kelas'   => $dataNota->k_formal . ' ' . $dataNota->jurusan . ' ' . $dataNota->t_formal,
             'tgl_bayar' => $dataNota->tgl,
             'nominal' => number_format($dataNota->nominal, 0, ',', '.'),
-            'tahun'   => $this->tahun
+            'tahun'   => $this->tahun,
+            'printername' => $this->model->getBy('settings', 'namaset', 'printername')->row('isiset')
         ]);
     }
 }

@@ -145,7 +145,7 @@
                 await qz.websocket.connect();
             }
 
-            const printer = await qz.printers.find("BP-LITE 80L");
+            const printer = await qz.printers.find(d.printername);
             const cfg = qz.configs.create(printer);
 
             const esc = [
