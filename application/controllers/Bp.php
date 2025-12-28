@@ -286,20 +286,20 @@ class Bp extends CI_Controller
 
     public function cetak($id)
     {
-        // $data['data'] = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
-        // $data['user'] = $this->Auth_model->current_user();
-        // $data['tangg'] = $this->model->getBy2Sentral('tangg', 'nis', $data['data']->nis, 'tahun', $this->tahun)->row();
-        // $data['santri'] = $this->model->getBy('tb_santri', 'nis', $data['data']->nis)->row();
-        // $data['tahun'] = $this->tahun;
+        $data = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
+        $user = $this->Auth_model->current_user();
+        $tangg = $this->model->getBy2Sentral('tangg', 'nis', $data->nis, 'tahun', $this->tahun)->row();
+        $santri = $this->model->getBy('tb_santri', 'nis', $data->nis)->row();
+        $tahun = $this->tahun;
 
         // $this->load->view('cetak', $data);
 
-        $dataNota = $this->db->query("
-        SELECT pembayaran.*, tb_santri.nama, tb_santri.desa, tb_santri.kec, tb_santri.kab, tb_santri.k_formal, tb_santri.jurusan, tb_santri.t_formal FROM pembayaran 
-        JOIN tb_santri ON pembayaran.nis = tb_santri.nis 
-        WHERE id_bayar = '$id' ")->row();
+        // $dataNota = $this->db->query("
+        // SELECT pembayaran.*, tb_santri.nama, tb_santri.desa, tb_santri.kec, tb_santri.kab, tb_santri.k_formal, tb_santri.jurusan, tb_santri.t_formal FROM pembayaran 
+        // JOIN tb_santri ON pembayaran.nis = tb_santri.nis 
+        // WHERE id_bayar = '$id' ")->row();
 
-        $user = $this->Auth_model->current_user();
+        // $user = $this->Auth_model->current_user();
 
         echo json_encode([
             'judul'   => 'KWITANSI PEMBAYARAN BP',
@@ -307,15 +307,15 @@ class Bp extends CI_Controller
             'alamat'  => 'Jl. Mayjend Pandjaitan No.12 Kraksaan',
             'tanggal' => date('d-m-Y H:i:s'),
             'kasir'   => $user->nama,
-            'nama'    => $dataNota->nama,
-            'ket'    => $dataNota->bulan,
-            'briva'    => $dataNota->briva,
-            'alamat_santri' => $dataNota->desa . '-' . $dataNota->kec . '-' . $dataNota->kab,
-            'kelas'   => $dataNota->k_formal . ' ' . $dataNota->jurusan . ' ' . $dataNota->t_formal,
-            'tgl_bayar' => $dataNota->at,
-            'nominal' => number_format($dataNota->nominal, 0, ',', '.'),
+            'nama'    => $santri->nama,
+            'ket'    => $data->bulan,
+            'briva'    => $tangg->briva,
+            'alamat_santri' => $santri->desa . '-' . $santri->kec . '-' . $santri->kab,
+            'kelas'   => $santri->k_formal . ' ' . $santri->jurusan . ' ' . $santri->t_formal,
+            'tgl_bayar' => $data->at,
+            'nominal' => number_format($data->nominal, 0, ',', '.'),
             'tahun'   => $this->tahun,
-            'penerima'   => $dataNota->kasir,
+            'penerima'   => $data->kasir,
         ]);
     }
 
