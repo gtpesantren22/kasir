@@ -148,7 +148,7 @@
                                     <div class="d-flex align-items-center">
                                         <div>
                                             <p class="mb-0 text-secondary">Tanggungan</p>
-                                            <h4 class="my-1 text-info"><?= rupiah($tgn->total) ?></h4>
+                                            <h4 class="my-1 text-info"><?= $tgn ? rupiah($tgn->total) : rupiah(0) ?></h4>
                                             <!-- <p class="mb-0 font-13">Jumlah Tanggunagn dalam 1 tahun</p> -->
                                         </div>
                                         <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
@@ -165,7 +165,7 @@
                                         <div>
                                             <p class="mb-0 text-secondary">Belum Bayar</p>
                                             <h4 class="my-1 text-danger">
-                                                <?= rupiah($tgn->total - $masuk->jml) ?></h4>
+                                                <?= $tgn && $masuk ? rupiah($tgn->total - $masuk->jml) : rupiah(0) ?></h4>
                                             <!-- <p class="mb-0 font-13">Sisa tanggungan yang belum lunas</p> -->
                                         </div>
                                         <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
@@ -181,7 +181,7 @@
                                     <div class="d-flex align-items-center">
                                         <div>
                                             <p class="mb-0 text-secondary">Pembayaran</p>
-                                            <h4 class="my-1 text-success"><?= rupiah($masuk->jml) ?></h4>
+                                            <h4 class="my-1 text-success"><?= $masuk ? rupiah($masuk->jml) : rupiah(0) ?></h4>
                                             <!-- <p class="mb-0 font-13">Jumlah yang sudah dibayar</p> -->
                                         </div>
                                         <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">

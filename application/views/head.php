@@ -138,6 +138,12 @@
                                 <span>Pembayaran Lainnya</span>
                             </a>
                         </li>
+                        <li class="sidebar-item">
+                            <a href="<?= base_url('esaku') ?>" class='sidebar-link'>
+                                <i class="bi bi-wallet"></i>
+                                <span>Uang Saku</span>
+                            </a>
+                        </li>
                         <div class="divider">
                             <div class="divider-text">Pengeluaran</div>
                         </div>

@@ -57,6 +57,11 @@
         var selectedOption = document.getElementById("nisSelect").value;
         window.location.href = '<?= base_url('bp/tanggungan/') ?>' + selectedOption;
     }
+
+    function redirectToPage3() {
+        var selectedOption = document.getElementById("mySelect").value;
+        window.location.href = '<?= base_url('esaku/discrb/') ?>' + selectedOption;
+    }
 </script>
 </body>
 
