@@ -193,27 +193,8 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="col-md-3">
-                                    <div class="table-responsive">
-                                        <table class="table table-striped">
-                                            <?php
-                                            for ($i = 1; $i <= 12; $i++) {
-                                                $tnn = $tgn->ju_ap;
-                                                if ($i == 5 || $i == 6) {
-                                                    $tnnOk = $tgn->me_ju;
-                                                } else {
-                                                    $tnnOk = $tnn;
-                                                }
-                                            ?>
-                                                <tr>
-                                                    <th><?= $bulan[$i]; ?></th>
-                                                    <th><?= rupiah($tnnOk); ?></th>
-                                                </tr>
-                                            <?php } ?>
-                                        </table>
-                                    </div>
-                                </div> -->
-                <div class="col-md-12 mt-2">
+
+                <div class="col-md-10 mt-2">
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                             <thead>
@@ -244,6 +225,28 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="col-md-2">
+                    <p>Printer Aktif</p>
+                    <span class="badge bg-primary mb-2"><?= $this->session->userdata('printername') ?? '-' ?></span>
+                    <form action="<?= base_url('esaku/changePrinter') ?>" method="post">
+                        <input type="hidden" name="nis" value="<?= $sn->nis; ?>">
+                        <div class="form-group">
+                            <!-- <label for="">Pilih</label> -->
+                            <select name="printer" id="" class="form-control">
+                                <option value="">-pilih jenis printer-</option>
+
+                                <?php
+                                foreach ($printers as $printer) {
+                                    echo "<option value='$printer->nama'>$printer->nama</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-sm" type="submit">Ganti</button>
+                        </div>
+                    </form>
                 </div>
                 <div class="col-md-5 mt-2">
                     <form action="<?= base_url('bp/addbayar') ?>" method="POST">
@@ -291,7 +294,8 @@
                                         <td><?= rupiah($r->nominal); ?></td>
                                         <td><?= $r->kasir; ?></td>
                                         <td>
-                                            <a href="<?= base_url('bp/cetak/' . $r->id_bayar) ?>"><i class="bi bi-printer-fill text-success"></i></a>
+                                            <!-- <a href="<?= base_url('bp/cetak/' . $r->id_bayar) ?>"><i class="bi bi-printer-fill text-success"></i></a> -->
+                                            <a onclick="cetakStruk(<?= $r->id_bayar ?>)"><i class="bi bi-printer-fill text-success"></i></a>
                                             <a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
                                         </td>
                                     </tr>
@@ -305,3 +309,97 @@
     </div>
 
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"></script>
+
+<script>
+    async function cetakStruk(id) {
+        const res = await fetch("<?= base_url('bp/cetak/') ?>" + id);
+        const d = await res.json();
+
+        try {
+            if (!qz.websocket.isActive()) {
+                await qz.websocket.connect();
+            }
+
+            const printer = await qz.printers.find(d.printername);
+            const cfg = qz.configs.create(printer);
+
+            const esc = [
+                '\x1B\x40', // INIT (reset printer)
+
+                // ===== JUDUL =====
+                '\x1B\x61\x01', // center
+                '\x1D\x21\x11', // double width + height
+                d.judul + '\n',
+                '\x1D\x21\x00', // normal size
+
+                d.pondok + '\n',
+                d.alamat + '\n',
+                '-'.repeat(48) + '\n',
+
+                // ===== HEADER =====
+                '\x1B\x61\x00', // left
+                'Tanggal : ' + d.tanggal + '\n',
+                'Kasir   : ' + d.kasir + '\n',
+                'Ket     : Pembayaran BP\n',
+                '\n',
+
+                // ===== DATA SANTRI =====
+                '\x1B\x45\x01', // bold ON
+                'Diterima dari:\n',
+                '\x1B\x45\x00', // bold OFF
+
+                'No. Briva   : ' + d.briva + '\n',
+                'Nama   : ' + d.nama + '\n',
+                'Alamat : ' + d.alamat_santri + '\n',
+                'Kelas  : ' + d.kelas + '\n',
+                '\n',
+
+                // ===== RINCIAN =====
+                '\x1B\x45\x01',
+                'Rincian:\n',
+                '\x1B\x45\x00',
+
+                'Tgl Bayar : ' + d.tgl_bayar + '\n',
+                'Nominal   : Rp ' + d.nominal + '\n',
+                'Penerima  : ' + d.penerima + '\n',
+                'Ket       : ' + d.ket + '\n',
+                '\n',
+
+                // ===== CATATAN =====
+                '\x1B\x45\x01',
+                'Catatan:\n',
+                '\x1B\x45\x00',
+
+                'Bukti pembayaran ini DISIMPAN oleh wali santri\n',
+                'sebagai bukti pembayaran Biaya Pendidikan\n',
+                'Ponpes Darul Lughah Wal Karomah\n',
+                'Tahun ' + d.tahun + '\n',
+                '\n',
+
+                'Contact Person:\n',
+                '\x1B\x45\x01',
+                '082 329 641 926\n',
+                '\x1B\x45\x00',
+                '\n',
+
+                // ===== TTD =====
+                '\x1B\x61\x01',
+                'Kraksaan, ' + d.tanggal.split(' ')[0] + '\n',
+                '\n',
+                'Petugas Uang Saku\n',
+
+                // ===== FEED & CUT =====
+                '\x1B\x64\x05', // feed 3 lines (PENTING!)
+                '\x1D\x56\x00' // cut
+            ];
+
+            await qz.print(cfg, esc);
+
+        } catch (err) {
+            alert('QZ Tray belum aktif');
+            console.error(err);
+        }
+    }
+</script>
