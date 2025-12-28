@@ -93,7 +93,7 @@
                     </form>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-10">
                     <p>Hasil Input</p>
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -127,6 +127,28 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="col-md-2">
+                    <p>Printer Aktif</p>
+                    <span class="badge bg-primary mb-2"><?= $this->session->userdata('printername') ?? '-' ?></span>
+                    <form action="<?= base_url('esaku/changePrinter') ?>" method="post">
+                        <input type="hidden" name="nis" value="<?= $sn->nis; ?>">
+                        <div class="form-group">
+                            <!-- <label for="">Pilih</label> -->
+                            <select name="printer" id="" class="form-control">
+                                <option value="">-pilih jenis printer-</option>
+
+                                <?php
+                                foreach ($printers as $printer) {
+                                    echo "<option value='$printer->nama'>$printer->nama</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-success btn-sm" type="submit">Ganti</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -94,6 +94,7 @@ class Esaku extends CI_Controller
         $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
         $data['hasil'] = $this->model->getBy2('esaku', 'nis', $nis, 'tahun', $this->tahun)->result();
         $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
+        $data['printers'] = $this->db->get('printers')->result();
 
         $this->load->view('head');
         $this->load->view('esakudtl', $data);
@@ -171,5 +172,14 @@ class Esaku extends CI_Controller
             'tahun'   => $this->tahun,
             'printername' => $this->model->getBy('settings', 'namaset', 'printername')->row('isiset')
         ]);
+    }
+
+    public function changePrinter()
+    {
+        $printer = $this->input->post('printer', TRUE);
+        $nis = $this->input->post('nis', TRUE);
+
+        $this->session->set_userdata('printername', $printer);
+        redirect('esaku/discrb/' . $nis);
     }
 }
