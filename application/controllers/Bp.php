@@ -316,6 +316,7 @@ class Bp extends CI_Controller
             'nominal' => number_format($data->nominal, 0, ',', '.'),
             'tahun'   => $this->tahun,
             'penerima'   => $data->kasir,
+            'printername' => $this->session->userdata('printername')
         ]);
     }
 

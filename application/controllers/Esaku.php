@@ -170,7 +170,7 @@ class Esaku extends CI_Controller
             'tgl_bayar' => $dataNota->tgl,
             'nominal' => number_format($dataNota->nominal, 0, ',', '.'),
             'tahun'   => $this->tahun,
-            'printername' => $this->model->getBy('settings', 'namaset', 'printername')->row('isiset')
+            'printername' => $this->session->userdata('printername')
         ]);
     }
 
