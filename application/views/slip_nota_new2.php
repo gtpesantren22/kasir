@@ -194,9 +194,18 @@
                             <!-- Jumlah diterima : -->
                             <div class="p-3 bg-blue-50 rounded-lg border border-blue-200 flex justify-between items-center">
                                 <p class="text-xl font-bold text-blue-600">Diterima </p>
-                                <p class="text-xl font-bold text-blue-600"><?= rupiah($totalHonor - $totalPotong) ?></p>
+                                <?php if (selisihTahun($data['tmt']) < 2): ?>
+                                    <p class="text-xl font-bold text-blue-600"><?= rupiah(($totalHonor - $totalPotong) * 0.8) ?></p>
+                                <?php else: ?>
+                                    <p class="text-xl font-bold text-blue-600"><?= rupiah($totalHonor - $totalPotong) ?></p>
+                                <?php endif ?>
                             </div>
-
+                            <?php if (selisihTahun($data['tmt']) < 2): ?>
+                                <hr class="text-xs mt-3">
+                                </hr>
+                                <p class="text-xs text-red-600">Catatan :</p>
+                                <p class="text-xs text-red-600">Yang bersangkutan berstatus PTY dengan masa pengabdian belum genap 2 (dua) tahun, sehingga gaji yang diterima sebesar 80% sesuai ketentuan yang berlaku.</p>
+                            <?php endif ?>
                         </div>
                     </div>
                 </div>

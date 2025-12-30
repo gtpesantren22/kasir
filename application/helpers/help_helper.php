@@ -268,3 +268,17 @@ function gabung2Kolom($kolom1, $kolom2, $lebarKolom1, $lebarKolom2)
     // Menggabungkan kedua kolom menjadi satu baris
     return $kolom1 . $kolom2;
 }
+
+function selisihTahun($tanggal)
+{
+    // Ubah parameter tanggal menjadi objek DateTime
+    $tanggalAwal = new DateTime($tanggal);
+    // Buat objek DateTime untuk tanggal hari ini
+    $tanggalSekarang = new DateTime();
+
+    // Hitung selisih menggunakan diff()
+    $selisih = $tanggalAwal->diff($tanggalSekarang);
+
+    // Kembalikan selisih dalam tahun
+    return $selisih->y;
+}
