@@ -194,13 +194,13 @@
                             <!-- Jumlah diterima : -->
                             <div class="p-3 bg-blue-50 rounded-lg border border-blue-200 flex justify-between items-center">
                                 <p class="text-xl font-bold text-blue-600">Diterima </p>
-                                <?php if (selisihTahun($data['tmt']) < 2): ?>
-                                    <p class="text-xl font-bold text-blue-600"><?= rupiah(($totalHonor - $totalPotong) * 0.8) ?></p>
+                                <?php if (selisihTahun($data['tmt']) < 2 && $data['sik'] == 'PTY'): ?>
+                                    <p class="text-xl font-bold text-blue-600"><?= rupiah(($totalHonor * 0.8) - $totalPotong) ?></p>
                                 <?php else: ?>
                                     <p class="text-xl font-bold text-blue-600"><?= rupiah($totalHonor - $totalPotong) ?></p>
                                 <?php endif ?>
                             </div>
-                            <?php if (selisihTahun($data['tmt']) < 2): ?>
+                            <?php if (selisihTahun($data['tmt']) < 2 && $data['sik'] == 'PTY'): ?>
                                 <hr class="text-xs mt-3">
                                 </hr>
                                 <p class="text-xs text-red-600">Catatan :</p>
