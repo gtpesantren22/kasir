@@ -388,7 +388,7 @@
                 '\x1B\x61\x01',
                 'Kraksaan, ' + d.tanggal.split(' ')[0] + '\n',
                 '\n',
-                'Petugas Uang Saku\n',
+                'Bendahara Pesantren\n',
 
                 // ===== FEED & CUT =====
                 '\x1B\x64\x05', // feed 3 lines (PENTING!)
