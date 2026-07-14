@@ -101,7 +101,6 @@ class Bp extends CI_Controller
         $data['masuk'] = $this->model->masukSentral($nis, $this->tahun)->row();
         $data['bayar'] = $this->model->getBy2Sentral('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
         $data['hasil'] = $this->model->getBy2('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
-        $data['dekos'] = $this->model->getBy('dekos', 'nis', $nis);
         $data['printers'] = $this->db->get('printers')->result();
 
         $data['tmpKos'] = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
@@ -113,22 +112,6 @@ class Bp extends CI_Controller
         $this->load->view('foot');
     }
 
-    public function buatKos($nis)
-    {
-        $sn = $this->model->getBy('tb_santri', 'nis', $nis)->row();
-        $data = [
-            'nis' => $nis,
-            't_kos' => $sn->t_kos,
-        ];
-        $this->model->simpan('dekos', $data);
-        if ($this->db->affected_rows() > 0) {
-            $this->session->set_flashdata('ok', 'Hasitory sudah dibuat');
-            redirect('bp/discrb/' . $nis);
-        } else {
-            $this->session->set_flashdata('error', 'Hasitory gagal dibuat');
-            redirect('bp/discrb/' . $nis);
-        }
-    }
 
     public function addbayar()
     {
@@ -162,45 +145,6 @@ class Bp extends CI_Controller
         }
     }
 
-    public function delDekos($id)
-    {
-        $data = $this->model->getBy('dekos', 'id_dekos', $id)->row();
-
-        $this->model->hapus('dekos', 'id_dekos', $id);
-        if ($this->db->affected_rows() > 0) {
-            $this->session->set_flashdata('ok', 'Dekosan berhasil dihapus');
-            redirect('bp/discrb/' . $data->nis);
-        } else {
-            $this->session->set_flashdata('error', 'Dekosan tidak berhasil dihapus');
-            redirect('bp/discrb/' . $data->nis);
-        }
-    }
-    public function gantiKos()
-    {
-        $nis = $this->input->post('nis', true);
-        $tanggal = $this->input->post('tanggal', true);
-        $t_kos = $this->input->post('t_kos', true);
-
-        $kosBaru = [
-            'nis' => $nis,
-            'masuk' => $tanggal,
-            't_kos' => $t_kos,
-        ];
-        $kosEdit = ['keluar' => $tanggal];
-        $santri = ['t_kos' => $t_kos];
-
-        $this->model->edit2('dekos', 'nis', $nis, 'keluar', '0000-00-00', $kosEdit);
-        $this->model->simpan('dekos', $kosBaru);
-        $this->model->editSantri('tb_santri', 'nis', $nis, $santri);
-
-        if ($this->db->affected_rows() > 0) {
-            $this->session->set_flashdata('ok', 'Dekosan berhasil dipindah');
-            redirect('bp/discrb/' . $nis);
-        } else {
-            $this->session->set_flashdata('error', 'Dekosan tidak berhasil dipindah');
-            redirect('bp/discrb/' . $nis);
-        }
-    }
     public function delBayar($id)
     {
         $data = $this->model->getBy('pembayaran', 'id_bayar', $id)->row();
