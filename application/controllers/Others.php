@@ -21,7 +21,7 @@ class Others extends CI_Controller
 
     public function index()
     {
-        $data['setor'] = $this->model->query("SELECT * FROM others WHERE tahun = $this->tahun ORDER BY tanggal DESC ")->result();
+        $data['setor'] = $this->db->query("SELECT * FROM others WHERE tahun = $this->tahun ORDER BY tanggal DESC ")->result();
 
         $this->load->view('head');
         $this->load->view('others', $data);

@@ -100,7 +100,7 @@ class Bp extends CI_Controller
         $data['tgn'] = $this->model->getBy2Sentral('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
         $data['masuk'] = $this->model->masukSentral($nis, $this->tahun)->row();
         $data['bayar'] = $this->model->getBy2Sentral('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
-        $data['hasil'] = $this->model->query("SELECT * FROM pembayaran WHERE nis = $nis AND tahun = '$this->tahun' ORDER BY tgl DESC ")->result();
+        $data['hasil'] = $this->db->query("SELECT * FROM pembayaran WHERE nis = $nis AND tahun = '$this->tahun' ORDER BY tgl DESC ")->result();
         $data['printers'] = $this->db->get('printers')->result();
 
         $data['tmpKos'] = array("-", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
