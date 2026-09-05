@@ -92,7 +92,7 @@ class Esaku extends CI_Controller
 
         $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
         $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
-        $data['hasil'] = $this->model->getBy2('esaku', 'nis', $nis, 'tahun', $this->tahun)->result();
+        $data['hasil'] = $this->db->query("SELECT * FROM esaku WHERE nis = '$nis' AND tahun = '$this->tahun' ORDER BY tgl DESC, id_bayar DESC")->result();
         $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
         $data['printers'] = $this->db->get('printers')->result();
 
@@ -134,18 +134,67 @@ class Esaku extends CI_Controller
 
     public function history()
     {
-        $data['hasil'] = $this->db->query("
-            SELECT esaku.*, tb_santri.nama, tb_santri.k_formal, tb_santri.t_formal 
-            FROM esaku 
-            LEFT JOIN tb_santri ON esaku.nis = tb_santri.nis 
-            WHERE esaku.tahun = '$this->tahun' 
-            ORDER BY esaku.tgl DESC, esaku.id_bayar DESC
-        ")->result();
-        $data['printers'] = $this->db->get('printers')->result();
+        $this->load->view('esakuhistory');
+    }
 
-        $this->load->view('head');
-        $this->load->view('esakuhistory', $data);
-        $this->load->view('foot');
+    public function historyData()
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+
+        $this->db->select("esaku.*, tb_santri.nama, tb_santri.k_formal, tb_santri.t_formal");
+        $this->db->from('esaku');
+        $this->db->join('tb_santri', 'esaku.nis=tb_santri.nis', 'left');
+        $this->db->where('esaku.tahun', $this->tahun);
+        $this->db->order_by('esaku.tgl', 'DESC');
+        $this->db->order_by('esaku.id_bayar', 'DESC');
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('esaku.tgl', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->or_like('esaku.kasir', $search_value);
+            $this->db->or_like('esaku.ket', $search_value);
+            $this->db->or_like('tb_santri.k_formal', $search_value);
+            $this->db->or_like('tb_santri.t_formal', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false); // Count total records without limit
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                $row_number++,
+                $row->id_bayar,
+                $row->tgl,
+                $row->nama ?? '-',
+                trim(($row->k_formal ?? '') . ' ' . ($row->t_formal ?? '')),
+                $row->nominal,
+                $row->kasir,
+                $row->ket,
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($output);
     }
 
     public function delBayar($id)
