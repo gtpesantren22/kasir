@@ -132,6 +132,22 @@ class Esaku extends CI_Controller
         }
     }
 
+    public function history()
+    {
+        $data['hasil'] = $this->db->query("
+            SELECT esaku.*, tb_santri.nama, tb_santri.k_formal, tb_santri.t_formal 
+            FROM esaku 
+            LEFT JOIN tb_santri ON esaku.nis = tb_santri.nis 
+            WHERE esaku.tahun = '$this->tahun' 
+            ORDER BY esaku.tgl DESC, esaku.id_bayar DESC
+        ")->result();
+        $data['printers'] = $this->db->get('printers')->result();
+
+        $this->load->view('head');
+        $this->load->view('esakuhistory', $data);
+        $this->load->view('foot');
+    }
+
     public function delBayar($id)
     {
         $data = $this->model->getBy('esaku', 'id_bayar', $id)->row();
@@ -139,10 +155,14 @@ class Esaku extends CI_Controller
         $this->model->hapus('esaku', 'id_bayar', $id);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Esaku data berhasil dihapus');
-            redirect('esaku/discrb/' . $data->nis);
         } else {
             $this->session->set_flashdata('error', 'Esaku data tidak berhasil dihapus');
-            redirect('esaku/discrb/' . $data->nis);
+        }
+
+        if ($this->input->server('HTTP_REFERER')) {
+            redirect($this->input->server('HTTP_REFERER'));
+        } else {
+            redirect('esaku/discrb/' . ($data ? $data->nis : ''));
         }
     }
 

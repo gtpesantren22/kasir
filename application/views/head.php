@@ -138,11 +138,20 @@
                                 <span>Pembayaran Lainnya</span>
                             </a>
                         </li>
-                        <li class="sidebar-item">
-                            <a href="<?= base_url('esaku') ?>" class='sidebar-link'>
+                        <li class="sidebar-item has-sub">
+                            <a href="#" class='sidebar-link'>
                                 <i class="bi bi-wallet"></i>
                                 <span>Uang Saku</span>
                             </a>
+
+                            <ul class="submenu ">
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('esaku') ?>" class="submenu-link">Data Uang Saku</a>
+                                </li>
+                                <li class="submenu-item  ">
+                                    <a href="<?= base_url('esaku/history') ?>" class="submenu-link">History Pembayaran</a>
+                                </li>
+                            </ul>
                         </li>
                         <div class="divider">
                             <div class="divider-text">Pengeluaran</div>
