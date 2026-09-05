@@ -202,7 +202,7 @@ class Bp extends CI_Controller
         $row_number = $start + 1;
 
         foreach ($query->result() as $row) {
-            $briva = $this->model->getBy2Sentral('tangg', 'nis', $row->nis, 'tahun', $row->tahun)->row();
+            $briva = $this->model->getBySentral('tangg', 'nis', $row->nis)->row();
             $data[] = [
                 $row_number++,
                 $row->id_bayar,
@@ -232,7 +232,7 @@ class Bp extends CI_Controller
     {
         $data = $this->db->query("SELECT * FROM pembayaran JOIN tb_santri ON pembayaran.nis=tb_santri.nis WHERE id_bayar = '$id' ")->row();
         $user = $this->Auth_model->current_user();
-        $tangg = $this->model->getBy2Sentral('tangg', 'nis', $data->nis, 'tahun', $this->tahun)->row();
+        $tangg = $this->model->getBySentral('tangg', 'nis', $data->nis)->row();
         $santri = $this->model->getBy('tb_santri', 'nis', $data->nis)->row();
         $tahun = $this->tahun;
 
@@ -252,8 +252,8 @@ class Bp extends CI_Controller
             'tanggal' => date('d-m-Y H:i:s'),
             'kasir'   => $user->nama,
             'nama'    => $santri->nama,
-            'ket'    => $data->bulan,
-            'briva'    => $tangg->briva,
+            'ket'    => $data->bulan ?? '',
+            'briva'    => $tangg->briva ?? '',
             'alamat_santri' => $santri->desa . '-' . $santri->kec . '-' . $santri->kab,
             'kelas'   => $santri->k_formal . ' ' . $santri->jurusan . ' ' . $santri->t_formal,
             'tgl_bayar' => $data->at,
