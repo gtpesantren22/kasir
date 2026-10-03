@@ -224,8 +224,16 @@
                                         <td><?= $r->kasir; ?></td>
                                         <td>
                                             <!-- <a href="<?= base_url('bp/cetak/' . $r->id_bayar) ?>"><i class="bi bi-printer-fill text-success"></i></a> -->
-                                            <a onclick="cetakStruk('<?= $r->id_bayar ?>')"><i class="bi bi-printer-fill text-success"></i></a>
-                                            <a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" class="tombol-hapus"><i class="bi bi-trash text-danger"></i></a>
+                                            <a onclick="cetakStruk('<?= $r->id_bayar ?>')" style="cursor: pointer;" title="Cetak Struk"><i class="bi bi-printer-fill text-success"></i></a>
+                                            <a href="#" class="btn-edit-bayar text-primary mx-1" 
+                                               data-bs-toggle="modal" 
+                                               data-bs-target="#modalEditBayar"
+                                               data-id="<?= $r->id_bayar ?>" 
+                                               data-nominal="<?= $r->nominal ?>" 
+                                               data-tgl="<?= $r->tgl ?>" 
+                                               data-bulan="<?= htmlspecialchars($r->bulan ?? '', ENT_QUOTES) ?>" 
+                                               title="Edit"><i class="bi bi-pencil-square text-primary"></i></a>
+                                            <a href="<?= base_url('bp/delBayar/' . $r->id_bayar) ?>" class="tombol-hapus" title="Hapus"><i class="bi bi-trash text-danger"></i></a>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -238,6 +246,48 @@
     </div>
 
 </section>
+
+<!-- Modal Edit Pembayaran BP -->
+<div class="modal fade text-left" id="modalEditBayar" tabindex="-1" role="dialog" aria-labelledby="modalEditBayarLabel" data-bs-backdrop="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalEditBayarLabel">Edit Pembayaran BP</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <?= form_open('bp/editBayar') ?>
+            <input type="hidden" name="id_bayar" id="edit_id_bayar">
+            <input type="hidden" name="nis" value="<?= $sn->nis; ?>">
+            <div class="modal-body">
+                <div class="form-group mb-2">
+                    <label for="edit_nominal">Nominal Pembayaran</label>
+                    <input type="text" name="nominal" id="edit_nominal" class="form-control uang" placeholder="Masukkan nominal" required>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="edit_tgl">Tanggal</label>
+                    <input type="text" name="tgl" id="edit_tgl" class="form-control flatpickr-no-config" placeholder="Tanggal" required>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="edit_bulan">Keterangan BP</label>
+                    <input type="text" name="bulan" id="edit_bulan" class="form-control" placeholder="Bulan BP" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Close</span>
+                </button>
+                <button type="submit" class="btn btn-primary ms-1">
+                    <i class="bx bx-check d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Simpan Perubahan</span>
+                </button>
+            </div>
+            <?= form_close() ?>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/qz-tray/qz-tray.js"></script>
 
@@ -331,4 +381,35 @@
             console.error(err);
         }
     }
+
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.btn-edit-bayar');
+        if (!btn) return;
+
+        var id = btn.getAttribute('data-id');
+        var nominal = btn.getAttribute('data-nominal');
+        var tgl = btn.getAttribute('data-tgl');
+        var bulan = btn.getAttribute('data-bulan');
+
+        var elId = document.getElementById('edit_id_bayar');
+        var elNominal = document.getElementById('edit_nominal');
+        var elBulan = document.getElementById('edit_bulan');
+        var elTgl = document.getElementById('edit_tgl');
+
+        if (elId) elId.value = id;
+        if (elNominal) elNominal.value = nominal;
+        if (elBulan) elBulan.value = bulan;
+
+        if (elTgl) {
+            if (elTgl._flatpickr) {
+                elTgl._flatpickr.setDate(tgl);
+            } else {
+                elTgl.value = tgl;
+            }
+        }
+
+        if (window.jQuery && elNominal) {
+            window.jQuery(elNominal).trigger('input');
+        }
+    });
 </script>

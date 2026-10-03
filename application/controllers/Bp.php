@@ -145,6 +145,25 @@ class Bp extends CI_Controller
         }
     }
 
+    public function editBayar()
+    {
+        $id_bayar = $this->input->post('id_bayar', true);
+        $nis = $this->input->post('nis', true);
+        $nominal = rmRp($this->input->post('nominal', true));
+        $tgl = $this->input->post('tgl', true);
+        $bulan_bayar = $this->input->post('bulan', true);
+
+        $data = [
+            'tgl' => $tgl,
+            'nominal' => $nominal,
+            'bulan' => $bulan_bayar,
+        ];
+
+        $this->model->edit('pembayaran', 'id_bayar', $id_bayar, $data);
+        $this->session->set_flashdata('ok', 'Data pembayaran berhasil diperbarui');
+        redirect('bp/discrb/' . $nis);
+    }
+
     public function delBayar($id)
     {
         $data = $this->model->getBy('pembayaran', 'id_bayar', $id)->row();
