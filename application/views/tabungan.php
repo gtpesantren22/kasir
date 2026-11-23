@@ -71,7 +71,7 @@ $this->load->view('head');
                             <?= form_open('tabungan/saveTabungan'); ?>
                             <div class="form-group mb-1">
                                 <label for="">Santri</label>
-                                <select name="nis" class="form-select choices" required>
+                                <select name="nis" class="form-select choices-santri" required>
                                     <option value=""> pilih santri</option>
                                     <?php foreach ($santri as $snt) : ?>
                                         <option value="<?= $snt->nis ?>"><?= $snt->nama ?></option>
@@ -110,7 +110,7 @@ $this->load->view('head');
                                 <label for="input35" class="col-sm-3 col-form-label">Santri</label>
                                 <div class="col-sm-9">
                                     <!-- <select name="nis" class="form-select choices" id="santriTabunganOut" required> -->
-                                    <select name="nis" class="form-select choices" id="santriTabunganOut" required>
+                                    <select name="nis" class="form-select choices-santri" id="santriTabunganOut" required>
                                         <option value=""> pilih santri</option>
                                         <?php foreach ($santri as $sn) : ?>
                                             <option value="<?= $sn->nis ?>"><?= $sn->nama ?></option>
@@ -239,6 +239,20 @@ $this->load->view('foot');
 ?>
 <script>
     $(document).ready(function() {
+        // Inisialisasi Choices.js dengan limit render agar browser tidak freeze saat data santri ribuan
+        const choicesSantri = document.querySelectorAll('.choices-santri');
+        choicesSantri.forEach(function(el) {
+            new Choices(el, {
+                searchResultLimit: 50,
+                renderChoiceLimit: 50,
+                searchFloor: 2,
+                shouldSort: false,
+                itemSelectText: '',
+                placeholder: true,
+                placeholderValue: 'Pilih santri'
+            });
+        });
+
         $('#tabunganData').DataTable({
             "processing": true,
             "serverSide": true,

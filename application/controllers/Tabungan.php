@@ -3,6 +3,11 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class Tabungan extends CI_Controller
 {
+    public $user;
+    public $tahun;
+    public $Auth_model;
+    public $model;
+
     public function __construct()
     {
         parent::__construct();
@@ -14,26 +19,37 @@ class Tabungan extends CI_Controller
         $user = $this->Auth_model->current_user('nama');
         $this->user = $user->nama;
         $this->load->model('Modeldata', 'model');
-        // $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
-        $this->tahun = '2024/2025';
+        $tahunSetting = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
+        $this->tahun = !empty($tahunSetting) ? $tahunSetting : '2024/2025';
     }
 
     public function index()
     {
         $data['user'] = $this->Auth_model->current_user();
-        $bp = $this->model->getBySum('pembayaran', 'tahun', $this->tahun, 'nominal')->row();
-        $setor = $this->model->getBySum('setoran', 'tahun', $this->tahun, 'nominal')->row();
 
-        $data['sumData'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'masuk', 'nominal')->row();
-        $data['sumkeluar'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'keluar', 'nominal')->row();
-        $data['sumAdmin'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'ket', 'Biaya admin', 'nominal')->row();
+        // 1 query efisien untuk semua ringkasan saldo tabungan
+        $summary = $this->db->query("
+            SELECT 
+                SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS sum_masuk,
+                SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS sum_keluar,
+                SUM(CASE WHEN ket = 'Biaya admin' THEN nominal ELSE 0 END) AS sum_admin
+            FROM tabungan 
+            WHERE tahun = '$this->tahun'
+        ")->row();
 
-        $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
+        $data['sumData'] = (object)['jml' => $summary->sum_masuk ?? 0];
+        $data['sumkeluar'] = (object)['jml' => $summary->sum_keluar ?? 0];
+        $data['sumAdmin'] = (object)['jml' => $summary->sum_admin ?? 0];
 
+        // Ambil hanya kolom nis dan nama santri aktif agar memori dan waktu query ringan
+        $data['santri'] = $this->db->select('nis, nama')
+            ->from('tb_santri')
+            ->where('aktif', 'Y')
+            ->order_by('nama', 'ASC')
+            ->get()
+            ->result();
 
-        // $this->load->view('head');
         $this->load->view('tabungan', $data);
-        // $this->load->view('foot');
     }
 
     public function tabunganData()
@@ -42,18 +58,42 @@ class Tabungan extends CI_Controller
         $draw = intval($this->input->post('draw'));
         $start = intval($this->input->post('start'));
         $length = intval($this->input->post('length'));
-        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+        $search_value = isset($this->input->post('search')['value']) ? trim($this->input->post('search')['value']) : '';
 
         $length = $length > 0 ? $length : 10;
         $start = $start >= 0 ? $start : 0;
-        // $bulanIni = date('m');
-        $this->db->select("id_tabungan, tabungan.nis, tb_santri.nama, SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS total, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS pakai ");
+
+        // 1. Hitung total records tanpa filter secara langsung (sangat cepat, tanpa subquery/SUM)
+        $total_records = (int) $this->db->query("SELECT COUNT(DISTINCT nis) AS total FROM tabungan WHERE tahun = ?", [$this->tahun])->row()->total;
+
+        // 2. Hitung recordsFiltered jika ada pencarian
+        if (!empty($search_value)) {
+            $this->db->select("COUNT(DISTINCT tabungan.nis) AS total");
+            $this->db->from('tabungan');
+            $this->db->join('tb_santri', 'tabungan.nis = tb_santri.nis');
+            $this->db->where('tabungan.tahun', $this->tahun);
+            $this->db->where('tb_santri.aktif', 'Y');
+            $this->db->group_start();
+            $this->db->like('tabungan.nis', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->group_end();
+            $filtered_records = (int) $this->db->get()->row()->total;
+        } else {
+            $filtered_records = $total_records;
+        }
+
+        // 3. Ambil data dengan paging
+        $this->db->select("
+            MIN(tabungan.id_tabungan) AS id_tabungan,
+            tabungan.nis,
+            tb_santri.nama,
+            SUM(CASE WHEN tabungan.jenis = 'masuk' THEN tabungan.nominal ELSE 0 END) AS total,
+            SUM(CASE WHEN tabungan.jenis = 'keluar' THEN tabungan.nominal ELSE 0 END) AS pakai
+        ");
         $this->db->from('tabungan');
-        $this->db->join('tb_santri', 'tabungan.nis=tb_santri.nis');
+        $this->db->join('tb_santri', 'tabungan.nis = tb_santri.nis');
         $this->db->where('tabungan.tahun', $this->tahun);
         $this->db->where('tb_santri.aktif', 'Y');
-        $this->db->group_by('tabungan.nis');
-        $this->db->order_by('tb_santri.nama', 'ASC');
 
         // Filter search
         if (!empty($search_value)) {
@@ -63,8 +103,8 @@ class Tabungan extends CI_Controller
             $this->db->group_end();
         }
 
-        $total_records = $this->db->count_all_results('', false); // Count total records without limit
-
+        $this->db->group_by('tabungan.nis');
+        $this->db->order_by('tb_santri.nama', 'ASC');
         $this->db->limit($length, $start);
         $query = $this->db->get();
         $data = [];
@@ -85,7 +125,7 @@ class Tabungan extends CI_Controller
         $output = [
             "draw" => $draw,
             "recordsTotal" => $total_records,
-            "recordsFiltered" => $total_records,
+            "recordsFiltered" => $filtered_records,
             "data" => $data
         ];
 
