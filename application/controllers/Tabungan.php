@@ -19,27 +19,18 @@ class Tabungan extends CI_Controller
         $user = $this->Auth_model->current_user('nama');
         $this->user = $user->nama;
         $this->load->model('Modeldata', 'model');
-        $tahunSetting = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset');
-        $this->tahun = !empty($tahunSetting) ? $tahunSetting : '2024/2025';
+        $this->tahun = $this->model->getBy('settings', 'namaset', 'tahun')->row('isiset')     ;
+   //      $this->tahun = '2024/2025';
     }
 
     public function index()
     {
         $data['user'] = $this->Auth_model->current_user();
 
-        // 1 query efisien untuk semua ringkasan saldo tabungan
-        $summary = $this->db->query("
-            SELECT 
-                SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS sum_masuk,
-                SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS sum_keluar,
-                SUM(CASE WHEN ket = 'Biaya admin' THEN nominal ELSE 0 END) AS sum_admin
-            FROM tabungan 
-            WHERE tahun = '$this->tahun'
-        ")->row();
-
-        $data['sumData'] = (object)['jml' => $summary->sum_masuk ?? 0];
-        $data['sumkeluar'] = (object)['jml' => $summary->sum_keluar ?? 0];
-        $data['sumAdmin'] = (object)['jml' => $summary->sum_admin ?? 0];
+        // Menggunakan method bawaan model yang sudah sesuai struktur data
+        $data['sumData'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'masuk', 'nominal')->row();
+        $data['sumkeluar'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'jenis', 'keluar', 'nominal')->row();
+        $data['sumAdmin'] = $this->model->getBy2Sum('tabungan', 'tahun', $this->tahun, 'ket', 'Biaya admin', 'nominal')->row();
 
         // Ambil hanya kolom nis dan nama santri aktif agar memori dan waktu query ringan
         $data['santri'] = $this->db->select('nis, nama')
